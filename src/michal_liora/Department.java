@@ -1,18 +1,19 @@
 package michal_liora;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Department {
     private String name;
     private int studentCount;
-    private Lecturer[] lecturers;
+    private ArrayList<Lecturer> lecturers;
     private int lecturerCount;
 
     public Department(String name, int studentCount) {
         setName(name);
         setStudentCount(studentCount);
-        setLecturers(new Lecturer[1]);
+        setLecturers(new ArrayList<>());
         setLecturerCount(0);
     }
 
@@ -26,7 +27,7 @@ public class Department {
         }
     }
 
-    public void setLecturers(Lecturer[] lecturers) {
+    public void setLecturers(ArrayList<Lecturer> lecturers) {
         this.lecturers = lecturers;
     }
 
@@ -42,8 +43,12 @@ public class Department {
         return studentCount;
     }
 
-    public Lecturer[] getLecturers() {
+    public ArrayList<Lecturer> getLecturers() {
         return lecturers;
+    }
+
+    public void addLecturer(Lecturer lecturer){
+        lecturers.add(lecturer);
     }
 
     public int getLecturerCount() {
@@ -55,7 +60,7 @@ public class Department {
         return "{" +
                 "name=" + name +
                 ", studentCount=" + studentCount +
-                ", lecturers=" + College.lecturerNamesToString(lecturers,lecturerCount) +
+                ", lecturers=" + College.lecturerNamesToString(lecturers) +
                 "}";
     }
 
@@ -66,6 +71,6 @@ public class Department {
         return studentCount == otherDepartment.studentCount &&
                 lecturerCount == otherDepartment.lecturerCount &&
                 name.equals(otherDepartment.name) &&
-                College.LecturerArrEqualsByName(lecturers, otherDepartment.lecturers, lecturerCount);
+                College.LecturerArrEqualsByName(lecturers, otherDepartment.lecturers);
     }
 }

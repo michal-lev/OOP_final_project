@@ -1,6 +1,6 @@
 package michal_liora;
 
-import java.util.Objects;
+import java.util.ArrayList;
 
 public class Lecturer {
     protected String name;
@@ -9,8 +9,7 @@ public class Lecturer {
     protected String degreeTitle;
     protected double salary;
     protected Department department;
-    protected Committee[] committees;
-    protected int committeesCount;
+    protected ArrayList<Committee> committees;
 
     public Lecturer(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department) {
         setName(name);
@@ -19,7 +18,7 @@ public class Lecturer {
         setDegreeTitle(degreeTitle);
         setSalary(salary);
         setDepartment(department);
-        setCommittees(new Committee[1]);
+        setCommittees(new ArrayList<>());
         setCommitteesCount(0);
     }
 
@@ -53,7 +52,7 @@ public class Lecturer {
         this.department = department;
     }
 
-    public void setCommittees(Committee[] committees) {
+    public void setCommittees(ArrayList<Committee> committees) {
         this.committees = committees;
     }
 
@@ -85,40 +84,29 @@ public class Lecturer {
         return department;
     }
 
-    public Committee[] getCommittees() {
+    public ArrayList<Committee> getCommittees() {
         return committees;
     }
 
-    public int getCommitteesCount() {
-        return committeesCount;
+    public void updateCommittees(Committee committee){
+        committees.add(committee);
     }
 
     public String committeesNamesToString() {
         String committesStr = "[";
-        int i = 0;
+        int i = 0, committeesCount = committees.size();
         for (; i < (committeesCount - 1); i++){
-            committesStr += committees[i].getName() + ", " ;
+            committesStr += committees.get(i).getName() + ", " ;
         }
         if(committeesCount != 0) {
-            committesStr += committees[i].getName();
+            committesStr += committees.get(i).getName();
         }
         committesStr += "]";
         return committesStr;
     }
 
-    public void updateRemovedFromCommittee(Committee committee){
-        boolean runOverFlag = false;
-        int i = 0;
-        for (; i < committeesCount - 1; i++) {
-            if(committees[i].equals(committee)){
-                runOverFlag = true;
-            }
-            if (runOverFlag){
-                committees[i] = committees[i + 1];
-            }
-        }
-        committees[i] = null;
-        setCommitteesCount(committeesCount - 1);
+    public void removeCommittee(Committee committee){
+        committees.remove(committee);
     }
 
     @Override
@@ -145,9 +133,9 @@ public class Lecturer {
         return 0;
     }
 
-    public boolean committeesArrEqualsByName(Committee[] otherCommittees){
-        for (int i = 0; i < committeesCount; i++){
-            if (!committees[i].getName().equals(otherCommittees[i].getName())){
+    public boolean committeesArrEqualsByName(ArrayList<Committee> otherCommittees){
+        for (int i = 0; i < committees.size(); i++){
+            if (!committees.get(i).getName().equals(otherCommittees.get(i).getName())){
                 return false;
             }
         }
@@ -165,7 +153,6 @@ public class Lecturer {
                 degreeLevel.equals(otherLecturer.degreeLevel) &&
                 degreeTitle.equals(otherLecturer.degreeTitle) &&
                 (department == null ? (otherLecturer.department == null) : department.equals(otherLecturer.department)) &&
-                committeesCount == otherLecturer.committeesCount &&
                 committeesArrEqualsByName(otherLecturer.committees);
     }
 }

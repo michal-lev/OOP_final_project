@@ -39,6 +39,7 @@ public class Main {
     public static void main(String[] args){
         String collegeName = getNameFromUser(College.class.getSimpleName());
         College college = new College(collegeName);
+
         boolean showMenu = true;
         do {
             System.out.println("0 - exit\n" +

@@ -1,18 +1,16 @@
 package michal_liora;
 
-import java.util.Objects;
+import java.util.ArrayList;
 
 public class Committee implements Comparable<Committee> {
     private String name;
     private Lecturer chair;
-    private Lecturer[] members;
-    private int memberCount;
+    private ArrayList<Lecturer> members;
 
     public Committee(String name, Lecturer chair) {
         setName(name);
         setChair(chair);
-        setMembers(new Lecturer[1]);
-        setMemberCount(0);
+        setMembers(new ArrayList<>());
     }
 
     public Committee(Committee toCopy){
@@ -34,7 +32,7 @@ public class Committee implements Comparable<Committee> {
         this.chair = lecturer;
     }
 
-    public void setMembers(Lecturer[] members) {
+    public void setMembers(ArrayList<Lecturer> members) {
         this.members = members;
     }
 
@@ -50,7 +48,7 @@ public class Committee implements Comparable<Committee> {
         return chair;
     }
 
-    public Lecturer[] getMembers() {
+    public ArrayList<Lecturer> getMembers() {
         return members;
     }
 
@@ -58,26 +56,20 @@ public class Committee implements Comparable<Committee> {
         return memberCount;
     }
 
+    public void addMember(Lecturer newLecturer){
+        members.add(newLecturer);
+    }
+
     public void removeMember(Lecturer memberToRemove){
-        boolean runOverFlag = false;
-        int i = 0;
-        for (; i < memberCount - 1; i++) {
-            if(members[i].equals(memberToRemove)){
-                runOverFlag = true;
-            }
-            if (runOverFlag){
-                members[i] = members[i + 1];
-            }
-        }
-        members[i] = null;
-        setMemberCount(memberCount - 1);
+        members.remove(memberToRemove);
     }
 
     public int getTotalArticleCount(){
         int totalNumArticles = 0;
-        for(int i = 0; i < memberCount; i++){
-            if(members[i] instanceof Doctor){
-                totalNumArticles += ((Doctor)members[i]).getArticleCount();
+        for(int i = 0; i < members.size(); i++){
+            Lecturer member = members.get(i);
+            if(member instanceof Doctor){
+                totalNumArticles += ((Doctor)member).getArticleCount();
             }
         }
         return totalNumArticles;
@@ -88,7 +80,7 @@ public class Committee implements Comparable<Committee> {
         return "{" +
                 "name=" + name +
                 ", chair=" + chair.getName() +
-                ", members=" + College.lecturerNamesToString(members,memberCount) +
+                ", members=" + College.lecturerNamesToString(members) +
                 "}";
     }
 
@@ -99,8 +91,7 @@ public class Committee implements Comparable<Committee> {
         Committee otherCommittee = (Committee) toCompare;
         return name.equals(otherCommittee.name) &&
                 chair.equals(otherCommittee.chair) &&
-                memberCount == otherCommittee.memberCount &&
-                College.LecturerArrEqualsByName(members,otherCommittee.members, memberCount);
+                College.LecturerArrEqualsByName(members,otherCommittee.members);
     }
 
     @Override

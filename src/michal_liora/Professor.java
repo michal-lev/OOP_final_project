@@ -1,8 +1,10 @@
 package michal_liora;
 
+import java.util.ArrayList;
+
 public class Professor extends Doctor {
     private String grantingInstitution;
-    public Professor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, int articleCount, String[] articles, String grantingInstitution) {
+    public Professor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, int articleCount, ArrayList<String> articles, String grantingInstitution) {
         super(name, id, degreeLevel, degreeTitle, salary, department, articleCount,articles);
         setGrantingInstitution(grantingInstitution);
     }

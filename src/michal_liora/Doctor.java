@@ -1,20 +1,21 @@
 package michal_liora;
 
+import java.util.ArrayList;
+
 public class Doctor extends Lecturer implements Comparable<Doctor> {
-    // fix everything
-    protected String[] articles;
+    protected ArrayList<String> articles;
     protected int articleCount;
-    public Doctor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, int articleCount, String[] articles) {
+    public Doctor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, int articleCount, ArrayList<String> articles) {
         super(name, id, degreeLevel, degreeTitle, salary, department);
         setArticleCount(articleCount);
         setArticles(articles);
     }
 
-    public void setArticles(String[] articles) {
+    public void setArticles(ArrayList<String> articles) {
         this.articles = articles;
     }
 
-    public String[] getArticles() {
+    public ArrayList<String> getArticles() {
         return articles;
     }
 
@@ -46,18 +47,18 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
         String articlesStr = "[";
         int i = 0;
         for (; i < (articleCount - 1); i++){
-            articlesStr += articles[i] + ", " ;
+            articlesStr += articles.get(i) + ", " ;
         }
         if(articleCount != 0) {
-            articlesStr += articles[i];
+            articlesStr += articles.get(i);
         }
         articlesStr += "]";
         return articlesStr;
     }
 
-    public boolean articlesEquals(String[] otherArticles){
+    public boolean articlesEquals(ArrayList<String> otherArticles){
         for (int i = 0; i < articleCount; i++){
-            if (!articles[i].equals(otherArticles[i])){
+            if (!articles.get(i).equals(otherArticles.get(i))){
                 return false;
             }
         }
