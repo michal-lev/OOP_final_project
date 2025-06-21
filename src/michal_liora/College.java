@@ -16,17 +16,11 @@ public class College {
     }
 
     public static String lecturerNamesToString(ArrayList<Lecturer> lecturersArr) {
-        String lecturersStr = "[";
-        int i = 0, lecturersCount = lecturersArr.size();
-
-        for (; i < (lecturersCount - 1); i++) {
-            lecturersStr += lecturersArr.get(i).getName() + ", ";
+        ArrayList<String> lecturersNames = new ArrayList<>();
+        for(int i = 0 ; i< lecturersArr.size();i++){
+            lecturersNames.add(lecturersArr.get(i).getName());
         }
-        if (lecturersCount != 0) {
-            lecturersStr += lecturersArr.get(i).getName();
-        }
-        lecturersStr += "]";
-        return lecturersStr;
+        return lecturersNames.toString();
     }
 
 
@@ -90,10 +84,10 @@ public class College {
                 if (grantingInstitution.isEmpty()){
                     throw new InvalidUserInputException(Enums.errorMessage.LECTURER_DETAIL_EMPTY.getMessage());
                 }
-                newLecturer = new Professor(name, id, degreeLevel, degreeTitle, salary, department, numArticles,articles,grantingInstitution);
+                newLecturer = new Professor(name, id, degreeLevel, degreeTitle, salary, department,articles,grantingInstitution);
             }
             else{
-                newLecturer = new Doctor(name, id, degreeLevel, degreeTitle, salary, department, numArticles,articles);
+                newLecturer = new Doctor(name, id, degreeLevel, degreeTitle, salary, department, articles);
             }
         }
         lecturers.add(newLecturer);

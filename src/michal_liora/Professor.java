@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Professor extends Doctor {
     private String grantingInstitution;
-    public Professor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, int articleCount, ArrayList<String> articles, String grantingInstitution) {
-        super(name, id, degreeLevel, degreeTitle, salary, department, articleCount,articles);
+    public Professor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, ArrayList<String> articles, String grantingInstitution) {
+        super(name, id, degreeLevel, degreeTitle, salary, department,articles);
         setGrantingInstitution(grantingInstitution);
     }
 
@@ -28,7 +28,7 @@ public class Professor extends Doctor {
                 ", salary=" + salary +
                 ", department=" + ((department != null) ? department.getName() : "(None)") +
                 ", committees=" + committeesNamesToString() +
-                ", articles=" + articlesToString() +
+                ", articles=" + articles +
                 "}";
     }
 

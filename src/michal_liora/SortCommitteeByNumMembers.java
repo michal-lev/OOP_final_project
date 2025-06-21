@@ -5,7 +5,8 @@ import java.util.Comparator;
 public class SortCommitteeByNumMembers implements Comparator<Committee> {
     @Override
     public int compare(Committee committee1, Committee committee2) {
-        int memberCount1 = committee1.getMemberCount(),memberCount2 = committee2.getMemberCount();
+        int memberCount1 = committee1.getMembers().size();
+        int memberCount2 = committee2.getMembers().size();
 
         if (memberCount1 > memberCount2) {
             return 1;

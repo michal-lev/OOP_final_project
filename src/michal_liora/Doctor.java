@@ -4,10 +4,8 @@ import java.util.ArrayList;
 
 public class Doctor extends Lecturer implements Comparable<Doctor> {
     protected ArrayList<String> articles;
-    protected int articleCount;
-    public Doctor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, int articleCount, ArrayList<String> articles) {
+    public Doctor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, ArrayList<String> articles) {
         super(name, id, degreeLevel, degreeTitle, salary, department);
-        setArticleCount(articleCount);
         setArticles(articles);
     }
 
@@ -17,16 +15,6 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
 
     public ArrayList<String> getArticles() {
         return articles;
-    }
-
-
-    public void setArticleCount(int articleCount) {
-        this.articleCount = articleCount;
-    }
-
-
-    public int getArticleCount(){
-        return this.articleCount;
     }
 
     @Override
@@ -39,30 +27,8 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
                 ", salary=" + salary +
                 ", department=" + ((department != null) ? department.getName() : "(None)") +
                 ", committees=" + committeesNamesToString() +
-                ", articles=" + articlesToString() +
+                ", articles=" + articles +
                 "}";
-    }
-
-    public String articlesToString(){
-        String articlesStr = "[";
-        int i = 0;
-        for (; i < (articleCount - 1); i++){
-            articlesStr += articles.get(i) + ", " ;
-        }
-        if(articleCount != 0) {
-            articlesStr += articles.get(i);
-        }
-        articlesStr += "]";
-        return articlesStr;
-    }
-
-    public boolean articlesEquals(ArrayList<String> otherArticles){
-        for (int i = 0; i < articleCount; i++){
-            if (!articles.get(i).equals(otherArticles.get(i))){
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -70,13 +36,13 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
         if (toCompare == null || getClass() != toCompare.getClass() || !super.equals(toCompare))
             return false;
         Doctor otherDoctor = (Doctor) toCompare;
-        return articleCount == otherDoctor.articleCount &&
-                articlesEquals(otherDoctor.articles);
+        return articles.equals(otherDoctor.articles);
     }
 
     @Override
     public int compareTo(Doctor other) {
-        int thisArticleCount = getArticleCount(), otherArticleCount = other.getArticleCount();
+        int thisArticleCount = articles.size();
+        int otherArticleCount = other.articles.size();
 
         if (thisArticleCount > otherArticleCount) {
             return 1;

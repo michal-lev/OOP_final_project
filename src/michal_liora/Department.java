@@ -8,13 +8,11 @@ public class Department {
     private String name;
     private int studentCount;
     private ArrayList<Lecturer> lecturers;
-    private int lecturerCount;
 
     public Department(String name, int studentCount) {
         setName(name);
         setStudentCount(studentCount);
         setLecturers(new ArrayList<>());
-        setLecturerCount(0);
     }
 
     public void setName(String name) {
@@ -29,10 +27,6 @@ public class Department {
 
     public void setLecturers(ArrayList<Lecturer> lecturers) {
         this.lecturers = lecturers;
-    }
-
-    public void setLecturerCount(int lecturerCount) {
-        this.lecturerCount = lecturerCount;
     }
 
     public String getName() {
@@ -51,10 +45,6 @@ public class Department {
         lecturers.add(lecturer);
     }
 
-    public int getLecturerCount() {
-        return lecturerCount;
-    }
-
     @Override
     public String toString() {
         return "{" +
@@ -69,7 +59,6 @@ public class Department {
         if (toCompare == null || getClass() != toCompare.getClass()) return false;
         Department otherDepartment = (Department) toCompare;
         return studentCount == otherDepartment.studentCount &&
-                lecturerCount == otherDepartment.lecturerCount &&
                 name.equals(otherDepartment.name) &&
                 College.LecturerArrEqualsByName(lecturers, otherDepartment.lecturers);
     }

@@ -19,7 +19,6 @@ public class Lecturer {
         setSalary(salary);
         setDepartment(department);
         setCommittees(new ArrayList<>());
-        setCommitteesCount(0);
     }
 
     public void setId(String id) {
@@ -56,10 +55,6 @@ public class Lecturer {
         this.committees = committees;
     }
 
-    public void setCommitteesCount(int committeesCount) {
-        this.committeesCount = committeesCount;
-    }
-
     public String getName() {
         return name;
     }
@@ -93,16 +88,11 @@ public class Lecturer {
     }
 
     public String committeesNamesToString() {
-        String committesStr = "[";
-        int i = 0, committeesCount = committees.size();
-        for (; i < (committeesCount - 1); i++){
-            committesStr += committees.get(i).getName() + ", " ;
+        ArrayList<String> committeesNames = new ArrayList<>();
+        for(int i = 0 ; i< committees.size();i++){
+            committeesNames.add(committees.get(i).getName());
         }
-        if(committeesCount != 0) {
-            committesStr += committees.get(i).getName();
-        }
-        committesStr += "]";
-        return committesStr;
+        return committeesNames.toString();
     }
 
     public void removeCommittee(Committee committee){

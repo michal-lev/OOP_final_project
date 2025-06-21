@@ -14,14 +14,11 @@ public class Committee implements Comparable<Committee> {
     }
 
     public Committee(Committee toCopy){
+        ArrayList<Lecturer> membersCopy = (ArrayList<Lecturer>)toCopy.getMembers().clone();
+
         setName("new-" + toCopy.getName());
         setChair(toCopy.getChair());
-        Lecturer[] membersCopy = new Lecturer[toCopy.members.length];
-        for(int i = 0; i < toCopy.memberCount; i++){
-            membersCopy[i] = toCopy.members[i];
-        }
         setMembers(membersCopy);
-        setMemberCount(toCopy.memberCount);
     }
 
     public void setName(String name) {
@@ -36,10 +33,6 @@ public class Committee implements Comparable<Committee> {
         this.members = members;
     }
 
-    public void setMemberCount(int memberCount) {
-        this.memberCount = memberCount;
-    }
-
     public String getName() {
         return name;
     }
@@ -50,10 +43,6 @@ public class Committee implements Comparable<Committee> {
 
     public ArrayList<Lecturer> getMembers() {
         return members;
-    }
-
-    public int getMemberCount() {
-        return memberCount;
     }
 
     public void addMember(Lecturer newLecturer){
@@ -69,7 +58,7 @@ public class Committee implements Comparable<Committee> {
         for(int i = 0; i < members.size(); i++){
             Lecturer member = members.get(i);
             if(member instanceof Doctor){
-                totalNumArticles += ((Doctor)member).getArticleCount();
+                totalNumArticles += ((Doctor)member).articles.size();
             }
         }
         return totalNumArticles;
