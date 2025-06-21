@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="michal_liora">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/michal_liora/michal_liora.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
