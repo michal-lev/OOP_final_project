@@ -1,5 +1,6 @@
 package michal_liora;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -65,6 +66,7 @@ public class Main {
                 switch (choice) {
                     case 0:
                         showMenu = false;
+                        college.saveBeforeExit();
                         break;
                     case 1:
                         college.createNewLecturer();
@@ -114,6 +116,9 @@ public class Main {
             }
             catch (CollegeException e){
                 System.out.println("Error : " + e.getMessage());
+            }
+            catch (IOException e){
+                System.out.println("Error with file backup: " + e.getMessage());
             }
         }while (showMenu);
 

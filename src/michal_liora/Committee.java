@@ -1,10 +1,10 @@
 package michal_liora;
 
 import michal_liora.Enums.degreeLevel;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Committee implements Comparable<Committee> {
+public class Committee implements Comparable<Committee>, Serializable {
     private String name;
     private Lecturer chair;
     private ArrayList<Lecturer> members;

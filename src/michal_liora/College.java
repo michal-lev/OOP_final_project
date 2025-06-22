@@ -1,18 +1,44 @@
 package michal_liora;
 
+import java.io.*;
 import java.util.ArrayList;
 
-public class College {
+public class College implements Serializable {
     private final String name;
     private final ArrayList<Lecturer> lecturers;
     private final ArrayList<Committee> committees;
     private final ArrayList<Department> departments;
+    private final static String collegeBackupPath = "collegeBackup.bin";
 
     public College(String name) {
         this.name = name;
         this.lecturers = new ArrayList<>();
         this.committees = new ArrayList<>();
         this.departments = new ArrayList<>();
+    }
+
+    public static void uploadBackupFile() throws IOException, ClassNotFoundException {
+        College collegeBackup;
+        File file = new File(collegeBackupPath);
+
+        if (file.exists()) {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            collegeBackup = (College) objectInputStream.readObject();
+            Main.printMessage("Loaded college from backup.");
+        }
+        else{
+            Main.printMessage("No backup found, please create your college :)");
+        }
+    }
+    public void saveBeforeExit() throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(collegeBackupPath);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(this);
+        Main.printMessage("All college info saved.");
+
+        objectOutputStream.close();
+        fileOutputStream.close();
     }
 
     public static String lecturerNamesToString(ArrayList<Lecturer> lecturersArr) {

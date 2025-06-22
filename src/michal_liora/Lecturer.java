@@ -1,8 +1,9 @@
 package michal_liora;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Lecturer {
+public class Lecturer implements Serializable {
     protected String name;
     protected String id;
     protected Enums.degreeLevel degreeLevel;

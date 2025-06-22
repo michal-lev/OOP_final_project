@@ -1,10 +1,9 @@
 package michal_liora;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.io.Serializable;
 
-public class Department {
+public class Department implements Serializable{
     private String name;
     private int studentCount;
     private ArrayList<Lecturer> lecturers;
