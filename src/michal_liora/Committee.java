@@ -81,6 +81,7 @@ public class Committee implements Comparable<Committee> {
         return "{" +
                 "name=" + name +
                 ", chair=" + chair.getName() +
+                ", member type=" + memberType.toString() +
                 ", members=" + College.lecturerNamesToString(members) +
                 "}";
     }
@@ -92,6 +93,7 @@ public class Committee implements Comparable<Committee> {
         Committee otherCommittee = (Committee) toCompare;
         return name.equals(otherCommittee.name) &&
                 chair.equals(otherCommittee.chair) &&
+                memberType.equals(otherCommittee.memberType) &&
                 College.LecturerArrEqualsByName(members,otherCommittee.members);
     }
 
