@@ -128,7 +128,7 @@ public class College {
         return articles;
     }
 
-    public void testCommitteeDetails(String name, Lecturer chair) throws CollegeException{
+    public String testCommitteeDetails(String name, Lecturer chair, String memberType) throws CollegeException{
         Committee existingCommittee = getCommitteeByName(name);
         if (existingCommittee != null){
             throw new NoDuplicatesException(Enums.errorMessage.COMMITTEE_EXISTS.getMessage());
@@ -139,14 +139,19 @@ public class College {
         if(!(chair instanceof Doctor)){
             throw new InvalidOperationValueException(Enums.errorMessage.INVALID_CHAIR_DEGREE.getMessage());
         }
+        String validMemberType = getValidDegreeLevel(memberType); //could throw
+        return validMemberType;
     }
 
     public void createNewCommittee() throws CollegeException{
         String name = Main.getNameFromUser(Committee.class.getSimpleName());
         String chairName = Main.getStringFromUser("Enter chair name: ");
         Lecturer chair = getLecturerByName(chairName);
-        testCommitteeDetails(name, chair); // might throw
-        Committee newCommittee = new Committee(name, chair);
+        String memberType = Main.getStringFromUser("Enter members degree level (bachelor/master/doctorate/professor): ");
+
+        String validMemberType = testCommitteeDetails(name, chair,memberType); // might throw
+
+        Committee newCommittee = new Committee(name, chair, validMemberType);
         addCommittee(newCommittee);
     }
 
@@ -261,6 +266,9 @@ public class College {
         if (committee.getChair().getName().equals(lecturer.getName())){
             throw new InvalidOperationValueException(Enums.errorMessage.CHAIR_CANT_BE_MEMBER.getMessage());
         }
+        if (committee.getMemberType().equals(lecturer.getDegreeLevel())){
+            throw new InvalidOperationValueException(Enums.errorMessage.MEMBER_TYPE_MISMATCH.getMessage());
+        }
     }
 
     public void addLecturerToCommittee() throws CollegeException {
@@ -269,7 +277,7 @@ public class College {
         Committee committee = getCommitteeByName(committeeName);
         Lecturer lecturer = getLecturerByName(lecturerName);
 
-        testAddLecturerToCommittee(committee, lecturer);
+        testAddLecturerToCommittee(committee, lecturer); // could throw
 
         committee.addMember(lecturer);
         lecturer.updateCommittees(committee);

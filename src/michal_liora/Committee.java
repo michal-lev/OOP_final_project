@@ -1,24 +1,36 @@
 package michal_liora;
 
+import michal_liora.Enums.degreeLevel;
+
 import java.util.ArrayList;
 
 public class Committee implements Comparable<Committee> {
     private String name;
     private Lecturer chair;
     private ArrayList<Lecturer> members;
+    private degreeLevel memberType;
 
-    public Committee(String name, Lecturer chair) {
+    public Committee(String name, Lecturer chair, String MemberType) {
         setName(name);
         setChair(chair);
         setMembers(new ArrayList<>());
+        setMemberType(degreeLevel.valueOf(MemberType.toUpperCase()));
     }
 
     public Committee(Committee toCopy){
         ArrayList<Lecturer> membersCopy = (ArrayList<Lecturer>)toCopy.getMembers().clone();
-
         setName("new-" + toCopy.getName());
         setChair(toCopy.getChair());
         setMembers(membersCopy);
+        setMemberType(degreeLevel.valueOf(toCopy.getMemberType()));
+    }
+
+    public String getMemberType() {
+        return memberType.toString();
+    }
+
+    public void setMemberType(degreeLevel memberType) {
+        this.memberType = memberType;
     }
 
     public void setName(String name) {

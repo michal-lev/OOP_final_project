@@ -32,8 +32,8 @@ public class Enums {
         INVALID_CHOICE("That is not an option"),
         NAME_EMPTY("Name can not be empty"),
         ARTICLE_NAME_EMPTY("Article name cannot be empty"),
-        LECTURER_DETAIL_EMPTY("All lecturer's details (except department) cannot be empty");
-
+        LECTURER_DETAIL_EMPTY("All lecturer's details (except department) cannot be empty"),
+        MEMBER_TYPE_MISMATCH("All members of the committee have to be of the same degree level");
 
         private final String message;
 
