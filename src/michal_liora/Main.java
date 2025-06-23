@@ -38,10 +38,22 @@ public class Main {
     }
 
     public static void main(String[] args){
-        String collegeName = getNameFromUser(College.class.getSimpleName());
-        College college = new College(collegeName);
+        College college = null;
+        boolean hasBackup = false;
+        try {
+            college = College.uploadBackupFile();
+            hasBackup = true;
+        }
+        catch (IOException|ClassNotFoundException e){
+            System.out.println("Error with uploading backup file: " + e.getMessage());
+        }
+        if(!hasBackup || college == null){
+            String collegeName = getNameFromUser(College.class.getSimpleName());
+            college = new College(collegeName);
+        }
 
         boolean showMenu = true;
+
         do {
             System.out.println("0 - exit\n" +
                     "1 - Add lecturer to college\n" +

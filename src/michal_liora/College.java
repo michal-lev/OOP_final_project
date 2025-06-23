@@ -17,8 +17,8 @@ public class College implements Serializable {
         this.departments = new ArrayList<>();
     }
 
-    public static void uploadBackupFile() throws IOException, ClassNotFoundException {
-        College collegeBackup;
+    public static College uploadBackupFile() throws IOException, ClassNotFoundException {
+        College collegeBackup = null;
         File file = new File(collegeBackupPath);
 
         if (file.exists()) {
@@ -30,6 +30,7 @@ public class College implements Serializable {
         else{
             Main.printMessage("No backup found, please create your college :)");
         }
+        return collegeBackup;
     }
     public void saveBeforeExit() throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(collegeBackupPath);
