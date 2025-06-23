@@ -81,7 +81,7 @@ public class Committee implements Comparable<Committee>, Serializable {
         return "{" +
                 "name=" + name +
                 ", chair=" + chair.getName() +
-                ", member type=" + memberType.toString() +
+                ", memberType=" + memberType.toString() +
                 ", members=" + College.lecturerNamesToString(members) +
                 "}";
     }

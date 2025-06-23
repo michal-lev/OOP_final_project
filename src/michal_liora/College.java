@@ -17,6 +17,10 @@ public class College implements Serializable {
         this.departments = new ArrayList<>();
     }
 
+    public String getName() {
+        return name;
+    }
+
     public static College uploadBackupFile() throws IOException, ClassNotFoundException {
         College collegeBackup = null;
         File file = new File(collegeBackupPath);
@@ -25,7 +29,7 @@ public class College implements Serializable {
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             collegeBackup = (College) objectInputStream.readObject();
-            Main.printMessage("Loaded college from backup.");
+            Main.printMessage("Loaded college '" + collegeBackup.getName() + "' from backup.");
         }
         else{
             Main.printMessage("No backup found, please create your college :)");
@@ -293,7 +297,7 @@ public class College implements Serializable {
         if (committee.getChair().getName().equals(lecturer.getName())){
             throw new InvalidOperationValueException(Enums.errorMessage.CHAIR_CANT_BE_MEMBER.getMessage());
         }
-        if (committee.getMemberType().equals(lecturer.getDegreeLevel())){
+        if (!(committee.getMemberType().equals(lecturer.getDegreeLevel()))){
             throw new InvalidOperationValueException(Enums.errorMessage.MEMBER_TYPE_MISMATCH.getMessage());
         }
     }

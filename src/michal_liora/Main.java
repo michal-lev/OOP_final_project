@@ -45,7 +45,7 @@ public class Main {
             hasBackup = true;
         }
         catch (IOException|ClassNotFoundException e){
-            System.out.println("Error with uploading backup file: " + e.getMessage());
+            System.out.println("Error with uploading backup file. Please create a new College");
         }
         if(!hasBackup || college == null){
             String collegeName = getNameFromUser(College.class.getSimpleName());
