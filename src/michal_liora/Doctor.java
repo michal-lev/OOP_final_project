@@ -1,22 +1,36 @@
 package michal_liora;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Doctor extends Lecturer implements Comparable<Doctor> {
-    protected ArrayList<String> articles;
-    public Doctor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, ArrayList<String> articles) {
+    protected Set<String> articles;
+    public Doctor(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department, Set<String> articles) {
         super(name, id, degreeLevel, degreeTitle, salary, department);
         setArticles(articles);
     }
 
-    public void setArticles(ArrayList<String> articles) {
+    public void setArticles(Set<String> articles) {
         this.articles = articles;
     }
 
-    public ArrayList<String> getArticles() {
+    public Set<String> getArticles() {
         return articles;
     }
+    
+    private String getArticlesWithIterator() {
+        Iterator<String> it = articles.iterator();
+        StringBuilder articleNames = new StringBuilder("[");
 
+        while (it.hasNext()) {
+            articleNames.append(it.next());
+            if (it.hasNext()) 
+                articleNames.append(", ");
+        }
+        articleNames.append("]");
+        return articleNames.toString();
+    }
+    
     @Override
     public String toString() {
         return "{" +
@@ -27,7 +41,7 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
                 ", salary=" + salary +
                 ", department=" + ((department != null) ? department.getName() : "(None)") +
                 ", committees=" + committeesNamesToString() +
-                ", articles=" + articles +
+                ", articles=" + getArticlesWithIterator() +
                 "}";
     }
 
