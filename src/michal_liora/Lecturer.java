@@ -1,6 +1,8 @@
 package michal_liora;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.HashSet;
 import java.io.Serializable;
 
 public class Lecturer implements Serializable {
@@ -10,7 +12,7 @@ public class Lecturer implements Serializable {
     protected String degreeTitle;
     protected double salary;
     protected Department department;
-    protected ArrayList<Committee> committees;
+    protected Set<Committee> committees;
 
     public Lecturer(String name, String id, String degreeLevel, String degreeTitle, double salary, Department department) {
         setName(name);
@@ -19,7 +21,7 @@ public class Lecturer implements Serializable {
         setDegreeTitle(degreeTitle);
         setSalary(salary);
         setDepartment(department);
-        setCommittees(new ArrayList<>());
+        setCommittees(new HashSet<>());
     }
 
     public void setId(String id) {
@@ -52,7 +54,7 @@ public class Lecturer implements Serializable {
         this.department = department;
     }
 
-    public void setCommittees(ArrayList<Committee> committees) {
+    public void setCommittees(Set<Committee> committees) {
         this.committees = committees;
     }
 
@@ -80,7 +82,7 @@ public class Lecturer implements Serializable {
         return department;
     }
 
-    public ArrayList<Committee> getCommittees() {
+    public Set<Committee> getCommittees() {
         return committees;
     }
 
@@ -89,11 +91,16 @@ public class Lecturer implements Serializable {
     }
 
     public String committeesNamesToString() {
-        ArrayList<String> committeesNames = new ArrayList<>();
-        for(int i = 0 ; i< committees.size();i++){
-            committeesNames.add(committees.get(i).getName());
+        Iterator<Committee> it = committees.iterator();
+        StringBuilder names = new StringBuilder("[");
+
+        while(it.hasNext()) {
+            names.append(it.next().getName());
+            if (it.hasNext())
+                names.append(", ");
         }
-        return committeesNames.toString();
+        names.append("]");
+        return names.toString();
     }
 
     public void removeCommittee(Committee committee){
@@ -124,15 +131,6 @@ public class Lecturer implements Serializable {
         return 0;
     }
 
-    public boolean committeesArrEqualsByName(ArrayList<Committee> otherCommittees){
-        for (int i = 0; i < committees.size(); i++){
-            if (!committees.get(i).getName().equals(otherCommittees.get(i).getName())){
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public boolean equals(Object toCompare) {
         if (toCompare == null || toCompare.getClass() != getClass())
@@ -144,6 +142,6 @@ public class Lecturer implements Serializable {
                 degreeLevel.equals(otherLecturer.degreeLevel) &&
                 degreeTitle.equals(otherLecturer.degreeTitle) &&
                 (department == null ? (otherLecturer.department == null) : department.equals(otherLecturer.department)) &&
-                committeesArrEqualsByName(otherLecturer.committees);
+                committees.equals(otherLecturer.committees);
     }
 }
