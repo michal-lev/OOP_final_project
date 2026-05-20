@@ -1,17 +1,19 @@
 package michal_liora;
 
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.io.Serializable;
 
 public class Department implements Serializable{
     private String name;
     private int studentCount;
-    private ArrayList<Lecturer> lecturers;
+    private Set<Lecturer> lecturers; // Set doesnt allow duplicates
 
     public Department(String name, int studentCount) {
         setName(name);
         setStudentCount(studentCount);
-        setLecturers(new ArrayList<>());
+        setLecturers(new HashSet<>());
     }
 
     public void setName(String name) {
@@ -24,7 +26,7 @@ public class Department implements Serializable{
         }
     }
 
-    public void setLecturers(ArrayList<Lecturer> lecturers) {
+    public void setLecturers(Set<Lecturer> lecturers) {
         this.lecturers = lecturers;
     }
 
@@ -36,12 +38,29 @@ public class Department implements Serializable{
         return studentCount;
     }
 
-    public ArrayList<Lecturer> getLecturers() {
+    public Set<Lecturer> getLecturers() {
         return lecturers;
     }
 
-    public void addLecturer(Lecturer lecturer){
-        lecturers.add(lecturer);
+    // Adds a lecturer and throws an exception if they already exist
+    public void addLecturer(Lecturer lecturer) throws NoDuplicatesException {
+        boolean isAdded = lecturers.add(lecturer);
+        if (!isAdded)
+            throw new NoDuplicatesException(Enums.errorMessage.LECTURER_EXISTS.getMessage());
+    }
+    
+    // Print names using Iterator only
+    private String getLecturerNamesWithIterator() {
+       Iterator<Lecturer> it = lecturers.iterator();
+       StringBuilder names = new StringBuilder("[");
+
+       while(it.hasNext()) {
+           names.append(it.next().getName());
+           if (it.hasNext())
+               names.append(", ");
+       }
+       names.append("]");
+       return names.toString();
     }
 
     @Override
@@ -49,7 +68,7 @@ public class Department implements Serializable{
         return "{" +
                 "name=" + name +
                 ", studentCount=" + studentCount +
-                ", lecturers=" + College.lecturerNamesToString(lecturers) +
+                ", lecturers=" + getLecturerNamesWithIterator() + // Print with Iterator
                 "}";
     }
 
@@ -59,6 +78,6 @@ public class Department implements Serializable{
         Department otherDepartment = (Department) toCompare;
         return studentCount == otherDepartment.studentCount &&
                 name.equals(otherDepartment.name) &&
-                College.LecturerArrEqualsByName(lecturers, otherDepartment.lecturers);
+                lecturers.equals(otherDepartment.lecturers); // Set checks if all items are equal
     }
 }
