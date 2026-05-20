@@ -2,26 +2,28 @@ package michal_liora;
 
 import michal_liora.Enums.degreeLevel;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 
 public class Committee implements Comparable<Committee>, Serializable {
     private String name;
     private Lecturer chair;
-    private ArrayList<Lecturer> members;
+    private Set<Lecturer> members;
     private degreeLevel memberType;
 
     public Committee(String name, Lecturer chair, String MemberType) {
         setName(name);
         setChair(chair);
-        setMembers(new ArrayList<>());
+        setMembers(new HashSet<>());
         setMemberType(degreeLevel.valueOf(MemberType.toUpperCase()));
     }
 
     public Committee(Committee toCopy){
-        ArrayList<Lecturer> membersCopy = (ArrayList<Lecturer>)toCopy.getMembers().clone();
         setName("new-" + toCopy.getName());
         setChair(toCopy.getChair());
-        setMembers(membersCopy);
+        setMembers(new HashSet<>(toCopy.members));
         setMemberType(degreeLevel.valueOf(toCopy.getMemberType()));
     }
 
@@ -41,7 +43,7 @@ public class Committee implements Comparable<Committee>, Serializable {
         this.chair = lecturer;
     }
 
-    public void setMembers(ArrayList<Lecturer> members) {
+    public void setMembers(Set<Lecturer> members) {
         this.members = members;
     }
 
@@ -53,7 +55,7 @@ public class Committee implements Comparable<Committee>, Serializable {
         return chair;
     }
 
-    public ArrayList<Lecturer> getMembers() {
+    public Set<Lecturer> getMembers() {
         return members;
     }
 
@@ -66,11 +68,14 @@ public class Committee implements Comparable<Committee>, Serializable {
     }
 
     public int getTotalArticleCount(){
+        Iterator<Lecturer> it = members.iterator();
+        Lecturer currMember;
         int totalNumArticles = 0;
-        for(int i = 0; i < members.size(); i++){
-            Lecturer member = members.get(i);
-            if(member instanceof Doctor){
-                totalNumArticles += ((Doctor)member).articles.size();
+
+        while(it.hasNext()) {
+            currMember = it.next();
+            if(currMember instanceof Doctor){
+                totalNumArticles += ((Doctor)currMember).articles.size();
             }
         }
         return totalNumArticles;
@@ -82,10 +87,21 @@ public class Committee implements Comparable<Committee>, Serializable {
                 "name=" + name +
                 ", chair=" + chair.getName() +
                 ", memberType=" + memberType.toString() +
-                ", members=" + College.lecturerNamesToString(members) +
+                ", members=" + getLecturerNamesWithIterator(members) +
                 "}";
     }
+    private String getLecturerNamesWithIterator(Set<Lecturer> lecturers) { //put in College, refer to from Department
+        Iterator<Lecturer> it = lecturers.iterator();
+        StringBuilder names = new StringBuilder("[");
 
+        while(it.hasNext()) {
+            names.append(it.next().getName());
+            if (it.hasNext())
+                names.append(", ");
+        }
+        names.append("]");
+        return names.toString();
+    }
     @Override
     public boolean equals(Object toCompare) {
         if (toCompare == null || toCompare.getClass() != getClass())
@@ -94,7 +110,7 @@ public class Committee implements Comparable<Committee>, Serializable {
         return name.equals(otherCommittee.name) &&
                 chair.equals(otherCommittee.chair) &&
                 memberType.equals(otherCommittee.memberType) &&
-                College.LecturerArrEqualsByName(members,otherCommittee.members);
+                members.equals(otherCommittee.members); // Check that Lecturer has HashCode()
     }
 
     @Override
