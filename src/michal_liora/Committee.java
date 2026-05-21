@@ -4,6 +4,7 @@ import michal_liora.Enums.degreeLevel;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -99,7 +100,12 @@ public class Committee implements HasName,Comparable<Committee>, Serializable {
         return name.equals(otherCommittee.name) &&
                 chair.equals(otherCommittee.chair) &&
                 memberType.equals(otherCommittee.memberType) &&
-                members.equals(otherCommittee.members); // Check that Lecturer has HashCode()
+                College.equalsByName(members,otherCommittee.members);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, chair, memberType);
     }
 
     @Override

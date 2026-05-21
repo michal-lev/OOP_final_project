@@ -1,5 +1,6 @@
 package michal_liora;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -64,6 +65,11 @@ public class Department implements Serializable{
         Department otherDepartment = (Department) toCompare;
         return studentCount == otherDepartment.studentCount &&
                 name.equals(otherDepartment.name) &&
-                lecturers.equals(otherDepartment.lecturers);
+                College.equalsByName(lecturers,otherDepartment.lecturers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, studentCount);
     }
 }

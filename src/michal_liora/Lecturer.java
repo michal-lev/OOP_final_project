@@ -1,6 +1,7 @@
 package michal_liora;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.HashSet;
 import java.io.Serializable;
@@ -142,6 +143,11 @@ public class Lecturer implements HasName,Serializable {
                 degreeLevel.equals(otherLecturer.degreeLevel) &&
                 degreeTitle.equals(otherLecturer.degreeTitle) &&
                 (department == null ? (otherLecturer.department == null) : department.equals(otherLecturer.department)) &&
-                committees.equals(otherLecturer.committees);
+                College.equalsByName(committees,otherLecturer.committees);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, id, degreeLevel, degreeTitle, salary, department, committees);
     }
 }

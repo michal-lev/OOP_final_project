@@ -2,6 +2,7 @@ package michal_liora;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -60,16 +61,19 @@ public class College implements Serializable {
         return names.toString();
     }
 
-    public static boolean LecturerArrEqualsByName(ArrayList<Lecturer> lecturers1, ArrayList<Lecturer>  lecturers2){
-        if (lecturers1.size() == lecturers2.size()){
+    public static boolean equalsByName(Set<? extends HasName> set1, Set<? extends HasName> set2){
+        Set<String> names1 = new HashSet<>();
+        Set<String> names2 = new HashSet<>();
+        if (set1.size() != set2.size()){
             return false;
         }
-        for (int i = 0; i < lecturers1.size(); i++){
-            if (!lecturers1.get(i).getName().equals(lecturers2.get(i).getName())){
-                return false;
-            }
+        for(HasName item:set1){
+            names1.add(item.getName());
         }
-        return true;
+        for(HasName item:set2){
+            names2.add(item.getName());
+        }
+        return names1.equals(names2);
     }
 
     public void testCreateCommitteeClone(Committee committee) throws NotExistException {
