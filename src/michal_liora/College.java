@@ -2,6 +2,8 @@ package michal_liora;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 public class College implements Serializable {
     private final String name;
@@ -45,15 +47,18 @@ public class College implements Serializable {
         objectOutputStream.close();
         fileOutputStream.close();
     }
+    public static String namesToString(Set<? extends HasName> setWithNames) {
+        Iterator<? extends HasName> it = setWithNames.iterator();
+        StringBuilder names = new StringBuilder("[");
 
-    public static String lecturerNamesToString(ArrayList<Lecturer> lecturersArr) {
-        ArrayList<String> lecturersNames = new ArrayList<>();
-        for(int i = 0 ; i< lecturersArr.size();i++){
-            lecturersNames.add(lecturersArr.get(i).getName());
+        while(it.hasNext()) {
+            names.append(it.next().getName());
+            if (it.hasNext())
+                names.append(", ");
         }
-        return lecturersNames.toString();
+        names.append("]");
+        return names.toString();
     }
-
 
     public static boolean LecturerArrEqualsByName(ArrayList<Lecturer> lecturers1, ArrayList<Lecturer>  lecturers2){
         if (lecturers1.size() == lecturers2.size()){

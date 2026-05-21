@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Department implements Serializable{
     private String name;
     private int studentCount;
-    private Set<Lecturer> lecturers; // Set doesnt allow duplicates
+    private Set<Lecturer> lecturers;
 
     public Department(String name, int studentCount) {
         setName(name);
@@ -48,27 +48,13 @@ public class Department implements Serializable{
         if (!isAdded)
             throw new NoDuplicatesException(Enums.errorMessage.LECTURER_EXISTS.getMessage());
     }
-    
-    // Print names using Iterator only
-    private String getLecturerNamesWithIterator() {
-       Iterator<Lecturer> it = lecturers.iterator();
-       StringBuilder names = new StringBuilder("[");
-
-       while(it.hasNext()) {
-           names.append(it.next().getName());
-           if (it.hasNext())
-               names.append(", ");
-       }
-       names.append("]");
-       return names.toString();
-    }
 
     @Override
     public String toString() {
         return "{" +
                 "name=" + name +
                 ", studentCount=" + studentCount +
-                ", lecturers=" + getLecturerNamesWithIterator() + // Print with Iterator
+                ", lecturers=" + College.namesToString(lecturers) +
                 "}";
     }
 
@@ -78,6 +64,6 @@ public class Department implements Serializable{
         Department otherDepartment = (Department) toCompare;
         return studentCount == otherDepartment.studentCount &&
                 name.equals(otherDepartment.name) &&
-                lecturers.equals(otherDepartment.lecturers); // Set checks if all items are equal
+                lecturers.equals(otherDepartment.lecturers);
     }
 }

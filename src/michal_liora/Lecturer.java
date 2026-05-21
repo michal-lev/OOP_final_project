@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.io.Serializable;
 
-public class Lecturer implements Serializable {
+public class Lecturer implements HasName,Serializable {
     protected String name;
     protected String id;
     protected Enums.degreeLevel degreeLevel;
@@ -116,7 +116,7 @@ public class Lecturer implements Serializable {
                 ", degreeTitle=" + degreeTitle +
                 ", salary=" + salary +
                 ", department=" + ((department != null) ? department.getName() : "(None)") +
-                ", committees=" + committeesNamesToString() +
+                ", committees=" + College.namesToString(committees) +
                 "}";
     }
 

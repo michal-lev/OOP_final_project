@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-public class Committee implements Comparable<Committee>, Serializable {
+public class Committee implements HasName,Comparable<Committee>, Serializable {
     private String name;
     private Lecturer chair;
     private Set<Lecturer> members;
@@ -87,21 +87,10 @@ public class Committee implements Comparable<Committee>, Serializable {
                 "name=" + name +
                 ", chair=" + chair.getName() +
                 ", memberType=" + memberType.toString() +
-                ", members=" + getLecturerNamesWithIterator(members) +
+                ", members=" + College.namesToString(members) +
                 "}";
     }
-    private String getLecturerNamesWithIterator(Set<Lecturer> lecturers) { //put in College, refer to from Department
-        Iterator<Lecturer> it = lecturers.iterator();
-        StringBuilder names = new StringBuilder("[");
 
-        while(it.hasNext()) {
-            names.append(it.next().getName());
-            if (it.hasNext())
-                names.append(", ");
-        }
-        names.append("]");
-        return names.toString();
-    }
     @Override
     public boolean equals(Object toCompare) {
         if (toCompare == null || toCompare.getClass() != getClass())
