@@ -1,23 +1,22 @@
 package michal_liora;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class College implements Serializable {
     private final String name;
-    private final ArrayList<Lecturer> lecturers;
-    private final ArrayList<Committee> committees;
-    private final ArrayList<Department> departments;
+    private final Set<Lecturer> lecturers;
+    private final Set<Committee> committees;
+    private final Set<Department> departments;
     private final static String collegeBackupPath = "collegeBackup.bin";
 
     public College(String name) {
         this.name = name;
-        this.lecturers = new ArrayList<>();
-        this.committees = new ArrayList<>();
-        this.departments = new ArrayList<>();
+        this.lecturers = new HashSet<>();
+        this.committees = new HashSet<>();
+        this.departments = new HashSet<>();
     }
 
     public String getName() {
@@ -39,6 +38,7 @@ public class College implements Serializable {
         }
         return collegeBackup;
     }
+    
     public void saveBeforeExit() throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(collegeBackupPath);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -48,6 +48,7 @@ public class College implements Serializable {
         objectOutputStream.close();
         fileOutputStream.close();
     }
+    
     public static String namesToString(Set<? extends HasName> setWithNames) {
         Iterator<? extends HasName> it = setWithNames.iterator();
         StringBuilder names = new StringBuilder("[");
@@ -81,20 +82,23 @@ public class College implements Serializable {
             throw new NotExistException(Enums.errorMessage.COMMITTEE_NOT_EXIST.getMessage());
         }
     }
+    
     public void createCommitteeClone() throws CollegeException {
         String committeeName = Main.getStringFromUser("Enter committee name: ");
-        Committee committeeToClone = getCommitteeByName(committeeName);
+        Committee committeeToClone = getByName(committees, committeeName);
         testCreateCommitteeClone(committeeToClone);
+        
         Committee newCommittee = new Committee(committeeToClone);
+        newCommittee.setName(committeeToClone.getName() + " - Copy");
         addCommittee(newCommittee);
     }
 
-    public String getName(String className){
+    public String getName(Set<? extends HasName> set, String className){
         String name;
         boolean nameExists;
         do{
             name = Main.getNameFromUser(className);
-            nameExists = (getLecturerByName(name) != null);
+            nameExists = (getByName(set,name) != null);
             if(nameExists){
                 Main.printMessage("Name already exists, try again");
             }
@@ -103,13 +107,13 @@ public class College implements Serializable {
     }
 
     public void createNewLecturer() throws CollegeException {
-        String name = getName(Lecturer.class.getSimpleName());
+        String name = getName(lecturers, Lecturer.class.getSimpleName());
         String id = Main.getStringFromUser("Enter ID number: ");
         String degreeLevel = Main.getStringFromUser("Enter degree (Bachelor/Master/Doctorate/Professor): ");
         String degreeTitle = Main.getStringFromUser("Enter degree Title: ");
         double salary = Main.getDoubleFromUser("Enter Salary: ");
         String departmentName = Main.getStringFromUser("Enter department name (or press Enter to skip): ");
-        Department department = getDepartmentByName(departmentName);
+        Department department = getByName(departments, departmentName);
         boolean departmentNameEmpty = departmentName.isEmpty();
         String lecturerType = testLecturerDetails(name, id,degreeLevel, degreeTitle, salary, departmentNameEmpty, department);
         Lecturer newLecturer;
@@ -118,7 +122,7 @@ public class College implements Serializable {
         }
         else{
             int numArticles = Main.getIntFromUser("Enter number of articles: ");
-            ArrayList<String> articles = getArticles(numArticles);
+            Set<String> articles = getArticles(numArticles);
             if(lecturerType.equals(Enums.degreeLevel.PROFESSOR.toString())){
                 String grantingInstitution = Main.getStringFromUser("Enter the professor's granting institution : ");
                 if (grantingInstitution.isEmpty()){
@@ -155,8 +159,8 @@ public class College implements Serializable {
         return "regular";
     }
 
-    public ArrayList<String> getArticles(int numArticles) throws InvalidUserInputException {
-        ArrayList<String> articles = new ArrayList<>();
+    public Set<String> getArticles(int numArticles) throws InvalidUserInputException {
+        Set<String> articles = new HashSet<>();
         String articleName;
         for (int i = 0; i < numArticles; i++){
             articleName = Main.getStringFromUser("Article " + (i+1) + " : ");
@@ -169,7 +173,7 @@ public class College implements Serializable {
     }
 
     public String testCommitteeDetails(String name, Lecturer chair, String memberType) throws CollegeException{
-        Committee existingCommittee = getCommitteeByName(name);
+        Committee existingCommittee = getByName(committees, name);
         if (existingCommittee != null){
             throw new NoDuplicatesException(Enums.errorMessage.COMMITTEE_EXISTS.getMessage());
         }
@@ -184,9 +188,9 @@ public class College implements Serializable {
     }
 
     public void createNewCommittee() throws CollegeException{
-        String name = Main.getNameFromUser(Committee.class.getSimpleName());
+        String name = getName(committees, Committee.class.getSimpleName());
         String chairName = Main.getStringFromUser("Enter chair name: ");
-        Lecturer chair = getLecturerByName(chairName);
+        Lecturer chair = getByName(lecturers, chairName);
         String memberType = Main.getStringFromUser("Enter members degree level (bachelor/master/doctorate/professor): ");
 
         String validMemberType = testCommitteeDetails(name, chair,memberType); // might throw
@@ -203,7 +207,7 @@ public class College implements Serializable {
     }
 
     public void createNewDepartment() throws CollegeException{
-        String name = getName(Department.class.getSimpleName());
+        String name = getName(departments,Department.class.getSimpleName());
         int studentCount = Main.getIntFromUser("Enter number of students in department: ");
 
         testCreateNewDepartment(name, studentCount);
@@ -238,15 +242,6 @@ public class College implements Serializable {
         committees.add(committee);
     }
 
-    public Committee getCommitteeByName(String committeeName){
-        for(int i = 0; i < committees.size(); i++){
-            Committee committee = committees.get(i);
-            if (committee.getName().equalsIgnoreCase(committeeName)){
-                return committee;
-            }
-        }
-        return null;
-    }
 
     public void testChangeCommitteeHead(Committee committee, Lecturer newChair) throws CollegeException{
         if (committee == null){
@@ -266,28 +261,18 @@ public class College implements Serializable {
     public void changeCommitteeHead() throws CollegeException {
         String committeeName = Main.getNameFromUser(Committee.class.getSimpleName());
         String chairName = Main.getStringFromUser("Enter chair name: ");
-        Committee committee = getCommitteeByName(committeeName);
-        Lecturer newChair = getLecturerByName(chairName);
+        
+        Committee committee = getByName(committees, committeeName);
+        Lecturer newChair = getByName(lecturers, chairName);
+        
         testChangeCommitteeHead(committee,newChair);
         committee.setChair(newChair);
     }
 
-
-    public Lecturer getLecturerByName(String lecturerName){
-        for(int i = 0; i < lecturers.size(); i++){
-            Lecturer lecturer = lecturers.get(i);
-            if (lecturer.getName().equalsIgnoreCase(lecturerName)){
-                return lecturer;
-            }
-        }
-        return null;
-    }
-
-    public Department getDepartmentByName(String departmentName){
-        for(int i = 0; i < departments.size(); i++){
-            Department department = departments.get(i);
-            if (department.getName().equalsIgnoreCase(departmentName)){
-                return department;
+        public <T extends HasName> T getByName(Set<T> set, String name){
+        for(T item : set){
+            if (item.getName().equalsIgnoreCase(name)){
+                return item;
             }
         }
         return null;
@@ -314,8 +299,9 @@ public class College implements Serializable {
     public void addLecturerToCommittee() throws CollegeException {
         String committeeName = Main.getStringFromUser("Enter committee name: ");
         String lecturerName = Main.getStringFromUser("Enter lecturer name: ");
-        Committee committee = getCommitteeByName(committeeName);
-        Lecturer lecturer = getLecturerByName(lecturerName);
+        
+        Committee committee = getByName(committees,committeeName);
+        Lecturer lecturer = getByName(lecturers, lecturerName);
 
         testAddLecturerToCommittee(committee, lecturer); // could throw
 
@@ -339,8 +325,9 @@ public class College implements Serializable {
     public void removeMemberFromCommittee() throws CollegeException{
         String committeeName = Main.getStringFromUser("Enter committee name: ");
         String lecturerName = Main.getStringFromUser("Enter lecturer name: ");
-        Committee committee = getCommitteeByName(committeeName);
-        Lecturer member = getLecturerByName(lecturerName);
+        
+        Committee committee = getByName(committees, committeeName);
+        Lecturer member = getByName(lecturers, lecturerName);
 
         testRemoveMemberFromCommittee(committee,member);
 
@@ -349,20 +336,14 @@ public class College implements Serializable {
     }
 
     public boolean checkIfLecturerInCommittee(Lecturer lecturer, Committee committee){
-        ArrayList<Lecturer> members = committee.getMembers();
-        for( int i = 0; i < members.size(); i++) {
-            if (members.get(i).equals(lecturer)){
-                return true;
-            }
-        }
-        return false;
+        return committee.getMembers().contains(lecturer);
     }
 
-    public double getSalaryAvg(ArrayList<Lecturer> lecturersArr){
+    public double getSalaryAvg(Set<Lecturer> lecturersArr){
         double salarySum = 0, avg;
         int arrSize = lecturersArr.size();
-        for (int i = 0; i < arrSize; i++) {
-            salarySum += lecturersArr.get(i).getSalary();
+        for (Lecturer lecturer : lecturersArr) {
+            salarySum += lecturer.getSalary();
         }
         avg = salarySum / arrSize;
         avg = (double) ((int) (avg * 100)) / 100;
@@ -381,7 +362,7 @@ public class College implements Serializable {
     }
     public void getDepartmentMembersSalaryAvg() throws CollegeException {
         String name = Main.getStringFromUser("Enter department Name: ");
-        Department department = getDepartmentByName(name);
+        Department department = getByName(departments, name);
         testGetDepartmentMembersSalaryAvg(department);
 
         double salaryAvg = getSalaryAvg(department.getLecturers());
@@ -405,36 +386,28 @@ public class College implements Serializable {
         String departmentName = Main.getStringFromUser("Enter department name: ");
         String lecturerName = Main.getStringFromUser("Enter lecturer name: ");
 
-        Department department = getDepartmentByName(departmentName);
-        Lecturer lecturer = getLecturerByName(lecturerName);
+        Department department = getByName(departments,departmentName);
+        Lecturer lecturer = getByName(lecturers, lecturerName);
         testAddLecturerToDepartment(department, lecturer); //could throw
 
         department.addLecturer(lecturer);
         lecturer.setDepartment(department);
     }
 
-    public String lecturerArrToString(ArrayList<Lecturer> lecturerArr){
-        String toReturn = "";
-        for(int i = 0; i < lecturerArr.size(); i++){
-            toReturn += lecturerArr.get(i).toString() + "\n";
+    public String SetToString(Set<?> set){
+        StringBuilder toReturn = new StringBuilder();
+        for(Object item : set){
+            toReturn.append(item.toString()).append("\n");
         }
-        return toReturn;
-    }
-
-    public String committeesArrToString(ArrayList<Committee> committeesArr){
-        String toReturn = "";
-        for(int i = 0; i < committeesArr.size(); i++){
-            toReturn += committeesArr.get(i).toString() + "\n";
-        }
-        return toReturn;
+        return toReturn.toString();
     }
 
     public void getDetailsOfAllLecturers(){
-        Main.printMessage(lecturerArrToString(lecturers));
+        Main.printMessage(SetToString(lecturers));
     }
 
     public void getDetailsOfAllCommittees(){
-        Main.printMessage(committeesArrToString(committees));
+        Main.printMessage(SetToString(committees));
     }
 
     public void testCompareDoctorsAndProfessors(Lecturer lecturer1, Lecturer lecturer2) throws CollegeException {
@@ -449,8 +422,8 @@ public class College implements Serializable {
     public void compareDoctorsAndProfessors() throws CollegeException {
         String lecturerName1 = Main.getStringFromUser("Enter first lecturer name: ");
         String lecturerName2 = Main.getStringFromUser("Enter second lecturer name: ");
-        Lecturer lecturer1 = getLecturerByName(lecturerName1);
-        Lecturer lecturer2 = getLecturerByName(lecturerName2);
+        Lecturer lecturer1 = getByName(lecturers, lecturerName1);
+        Lecturer lecturer2 = getByName(lecturers, lecturerName2);
 
         testCompareDoctorsAndProfessors(lecturer1,lecturer2);
 
@@ -467,8 +440,8 @@ public class College implements Serializable {
     public void compareCommittees() throws CollegeException{
         String committeeName1 = Main.getStringFromUser("Enter first committee name: ");
         String committeeName2 = Main.getStringFromUser("Enter second committee name: ");
-        Committee committee1 = getCommitteeByName(committeeName1);
-        Committee committee2 = getCommitteeByName(committeeName2);
+        Committee committee1 = getByName(committees, committeeName1);
+        Committee committee2 = getByName(committees, committeeName2);
 
         testCompareCommittees(committee1,committee2);
 
