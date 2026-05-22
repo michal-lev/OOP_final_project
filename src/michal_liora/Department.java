@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.io.Serializable;
 
-public class Department implements Serializable{
+public class Department implements Serializable, HasName{
     private String name;
     private int studentCount;
     private Set<Lecturer> lecturers;
