@@ -62,16 +62,16 @@ public class College implements Serializable {
         return names.toString();
     }
 
-    public static boolean equalsByName(Set<? extends HasName> set1, Set<? extends HasName> set2){
+    public static <T extends HasName> boolean equalsByName(Set<T> set1, Set<T> set2){
         Set<String> names1 = new HashSet<>();
         Set<String> names2 = new HashSet<>();
         if (set1.size() != set2.size()){
             return false;
         }
-        for(HasName item:set1){
+        for(T item:set1){
             names1.add(item.getName());
         }
-        for(HasName item:set2){
+        for(T item:set2){
             names2.add(item.getName());
         }
         return names1.equals(names2);
@@ -87,9 +87,7 @@ public class College implements Serializable {
         String committeeName = Main.getStringFromUser("Enter committee name: ");
         Committee committeeToClone = getByName(committees, committeeName);
         testCreateCommitteeClone(committeeToClone);
-        
         Committee newCommittee = new Committee(committeeToClone);
-        newCommittee.setName(committeeToClone.getName() + " - Copy");
         addCommittee(newCommittee);
     }
 
