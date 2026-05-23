@@ -28,8 +28,8 @@ public class Professor extends Doctor {
                 ", grantingInstitution=" + grantingInstitution +
                 ", salary=" + salary +
                 ", department=" + ((department != null) ? department.getName() : "(None)") +
-                ", committees=" + committeesNamesToString() +
-                ", articles=" + getArticlesWithIterator() +
+                ", committees=" + College.namesToString(committees) +
+                ", articles=" + getArticles() +
                 "}";
     }
 

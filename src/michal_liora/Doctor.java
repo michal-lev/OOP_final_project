@@ -14,11 +14,7 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
         this.articles = articles;
     }
 
-    public Set<String> getArticles() {
-        return articles;
-    }
-    
-    public String getArticlesWithIterator() {
+    public String getArticles() {
         Iterator<String> it = articles.iterator();
         StringBuilder articleNames = new StringBuilder("[");
 
@@ -40,8 +36,8 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
                 ", degreeTitle=" + degreeTitle +
                 ", salary=" + salary +
                 ", department=" + ((department != null) ? department.getName() : "(None)") +
-                ", committees=" + committeesNamesToString() +
-                ", articles=" + getArticlesWithIterator() +
+                ", committees=" + College.namesToString(committees) +
+                ", articles=" + getArticles() +
                 "}";
     }
 

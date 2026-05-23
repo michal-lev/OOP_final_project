@@ -91,19 +91,6 @@ public class Lecturer implements HasName,Serializable {
         committees.add(committee);
     }
 
-    public String committeesNamesToString() {
-        Iterator<Committee> it = committees.iterator();
-        StringBuilder names = new StringBuilder("[");
-
-        while(it.hasNext()) {
-            names.append(it.next().getName());
-            if (it.hasNext())
-                names.append(", ");
-        }
-        names.append("]");
-        return names.toString();
-    }
-
     public void removeCommittee(Committee committee){
         committees.remove(committee);
     }
