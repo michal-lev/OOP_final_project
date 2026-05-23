@@ -105,7 +105,7 @@ public class Committee implements HasName,Comparable<Committee>, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, chair, memberType);
+        return Objects.hash(name, chair, memberType, College.namesToString(members));
     }
 
     @Override

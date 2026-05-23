@@ -1,6 +1,7 @@
 package michal_liora;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 public class Doctor extends Lecturer implements Comparable<Doctor> {
@@ -47,6 +48,11 @@ public class Doctor extends Lecturer implements Comparable<Doctor> {
             return false;
         Doctor otherDoctor = (Doctor) toCompare;
         return articles.equals(otherDoctor.articles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), articles);
     }
 
     @Override

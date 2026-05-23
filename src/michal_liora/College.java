@@ -120,7 +120,7 @@ public class College implements Serializable {
         }
         else{
             int numArticles = Main.getIntFromUser("Enter number of articles: ");
-            Set<String> articles = getArticles(numArticles);
+            Set<String> articles = getArticlesNames(numArticles);
             if(lecturerType.equals(Enums.degreeLevel.PROFESSOR.toString())){
                 String grantingInstitution = Main.getStringFromUser("Enter the professor's granting institution : ");
                 if (grantingInstitution.isEmpty()){
@@ -157,7 +157,7 @@ public class College implements Serializable {
         return "regular";
     }
 
-    public Set<String> getArticles(int numArticles) throws InvalidUserInputException {
+    public Set<String> getArticlesNames(int numArticles) throws InvalidUserInputException {
         Set<String> articles = new HashSet<>();
         String articleName;
         for (int i = 0; i < numArticles; i++){

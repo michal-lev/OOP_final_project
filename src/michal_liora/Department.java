@@ -70,6 +70,6 @@ public class Department implements Serializable, HasName{
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, studentCount);
+        return Objects.hash(name, studentCount, College.namesToString(lecturers));
     }
 }

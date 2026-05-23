@@ -1,6 +1,7 @@
 package michal_liora;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 public class Professor extends Doctor {
@@ -39,6 +40,11 @@ public class Professor extends Doctor {
             return false;
         Professor otherProfessor = (Professor) toCompare;
         return grantingInstitution.equals(otherProfessor.grantingInstitution);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), grantingInstitution);
     }
 }
 
