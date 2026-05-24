@@ -427,6 +427,7 @@ public class College implements Serializable {
                 throw new InvalidUserInputException(Enums.errorMessage.INVALID_CHOICE.getMessage());
         }
         Set<Lecturer> orderedLecturers = new TreeSet<>(LecturerComparator);
+        orderedLecturers.addAll(lecturers);
         Main.printMessage(SetToString(orderedLecturers));
     }
 
