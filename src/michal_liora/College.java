@@ -1,9 +1,7 @@
 package michal_liora;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class College implements Serializable {
     private final String name;
@@ -400,8 +398,36 @@ public class College implements Serializable {
         return toReturn.toString();
     }
 
-    public void getDetailsOfAllLecturers(){
-        Main.printMessage(SetToString(lecturers));
+    public void getDetailsOfAllLecturers() throws CollegeException {
+        Comparator<Lecturer> LecturerComparator;
+        int orderBy = Main.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Degree Level\n  3 - by Salary\n");
+        switch (orderBy) {
+            case 1:
+                LecturerComparator =(o1, o2) -> o1.getName().compareTo(o2.getName());
+                break;
+            case 2:
+                LecturerComparator = (o1, o2) -> {
+                    Enums.degreeLevel dl1 = Enums.degreeLevel.valueOf(o1.getDegreeLevel());
+                    Enums.degreeLevel dl2 = Enums.degreeLevel.valueOf(o2.getDegreeLevel());
+                    int x = dl1.compareTo(dl2);
+                    if(x == 0)
+                        return o1.getName().compareTo(o2.getName());
+                    return x;
+                };
+                break;
+            case 3:
+                LecturerComparator = (o1, o2) -> {
+                    int x = Double.compare(o1.getSalary(), o2.getSalary());
+                    if(x == 0)
+                        return o1.getName().compareTo(o2.getName());
+                    return x;
+                };
+                break;
+            default:
+                throw new InvalidUserInputException(Enums.errorMessage.INVALID_CHOICE.getMessage());
+        }
+        Set<Lecturer> orderedLecturers = new TreeSet<>(LecturerComparator);
+        Main.printMessage(SetToString(orderedLecturers));
     }
 
     public void getDetailsOfAllCommittees(){
