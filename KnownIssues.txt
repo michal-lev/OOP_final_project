@@ -21,7 +21,7 @@ is updated in the future.
 ============================================================================
 Changes & Updates
 
-1. Migration of System Data Structures (ArrayList → Set)
+1. System Data Structures Update (ArrayList → Set)
 
 Description: Replaced the main internal collections (lecturers, committees, departments) and
 Committee members from ArrayList to Set (using HashSet). This prevents duplicates, improves search efficiency
@@ -35,7 +35,7 @@ Committee.java: Lines 14 (Class Field), 20 (Committee Constructor), 24–29 (Com
 
 Department.java: : Lines 12 (Class Field), 17 (Department Constructor)
 ---------------------------------
-2. Migration of Lecturer Attributes (ArrayList → Set)
+2. Lecturer Attributes Update (ArrayList → Set)
 
 Description: Replaced ArrayList with Set for specific lecturer attributes (such as a lecturer's committees and
 a doctor's/professor's articles) to prevent duplicates and maintain data integrity.
@@ -61,7 +61,7 @@ Committee.java: Line 11
 
 Department.java: Line 9
 ---------------------------------
-4. Unification of Methods and Delegation to Generics
+4. Unified Methods and Generic Utilities
 
 Description: Replaced multiple specific string-handling, comparison, and printing methods with consolidated
 generic methods in College.java (namesToString, equalsByName, getByName, SetToString).
@@ -111,7 +111,7 @@ Committee.java: Lines 71–83 (getTotalArticleCount method)
 
 Doctor.java: Lines 18–29 (getArticles method)
 ---------------------------------
-7. Refinement of Specific Business Logic
+7. Input and Validation Updates
 
 Description: Replaced targeted input methods and implemented specific exceptions to prevent duplicate data entry,
 adapting the system to the new Set architecture.
