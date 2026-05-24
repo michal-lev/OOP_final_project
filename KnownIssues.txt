@@ -1,0 +1,124 @@
+Version:
+
+Course 10119, Exercise 1
+Continuation project of the Object-Oriented Programming course.
+
+============================================================================
+Known Issues / Bugs:
+
+Doctor's hashCode Dependency on Articles
+
+Description: In the Doctor class, the equals and hashCode methods use the articles Set.
+Because of this, if someone tries to add or remove articles after a Doctor is already placed inside a HashSet
+(like the lecturers Set in the College class), the Doctor's hashCode will change.
+This is a known issue because changing a hashCode for an object that is already inside a HashSet causes
+the Set to "lose" the object.
+
+Status: Since the current system does not allow updating a doctor's articles after creation,
+this will not cause an actual bug right now. It is documented here as a known design limitation in case the system
+is updated in the future.
+
+============================================================================
+Changes & Updates
+
+1. Migration of System Data Structures (ArrayList → Set)
+
+Description: Replaced the main internal collections (lecturers, committees, departments) and
+Committee members from ArrayList to Set (using HashSet). This prevents duplicates, improves search efficiency
+to O(1), and properly handles deep copies in constructors.
+
+Files & Lines:
+
+College.java: Lines 10–12 (Class Fields), 17–19 (College Constructor)
+
+Committee.java: Lines 14 (Class Field), 20 (Committee Constructor), 24–29 (Committee Copy Constructor)
+
+Department.java: : Lines 12 (Class Field), 17 (Department Constructor)
+---------------------------------
+2. Migration of Lecturer Attributes (ArrayList → Set)
+
+Description: Replaced ArrayList with Set for specific lecturer attributes (such as a lecturer's committees and
+a doctor's/professor's articles) to prevent duplicates and maintain data integrity.
+
+Files & Lines:
+
+Lecturer.java: Lines 16 (Class Field), 25 (Lecturer Constructor)
+
+Doctor.java: Lines 8 (Class Field), 9 (Doctor Constructor), 14 (setArticles method)
+
+Professor.java: Lines 9–12 (Professor Constructor)
+---------------------------------
+3. Implementation of the HasName Interface
+
+Description: Implemented the `HasName` interface in the `Lecturer`, `Committee`, and `Department` classes.
+This allows these classes to work with the new generic search and utility methods in `College.java`.
+
+Files & Lines:
+
+Lecturer.java: Line 9
+
+Committee.java: Line 11
+
+Department.java: Line 9
+---------------------------------
+4. Unification of Methods and Delegation to Generics
+
+Description: Replaced multiple specific string-handling, comparison, and printing methods with consolidated
+generic methods in College.java (namesToString, equalsByName, getByName, SetToString).
+Replaced the logic in the main classes toString and equals methods to delegate to these utilities.
+
+Files & Lines:
+
+College.java: Lines 52–78 (namesToString & equalsByName methods), 270–277 (getByName method), 395–401 (SetToString method)
+
+Lecturer.java: Lines 107 (toString method), 133 (equals method)
+
+Committee.java: Lines 86–93 (toString method), 96–104 (equals method)
+
+Department.java: Lines 54–60 (toString method), 63–69 (equals method)
+
+Doctor.java: Lines 31–43 (toString method)
+
+Professor.java: Lines 22–35 (toString method)
+---------------------------------
+5. Implementation of hashCode
+
+Description: Implemented hashCode methods using Objects.hash() to satisfy the equals/hashCode contract.
+This ensures correct behavior and prevents data loss when objects are stored in the new HashSet collections.
+
+Files & Lines:
+
+Lecturer.java: Lines 136–139
+
+Committee.java: Lines 107–109
+
+Department.java: Lines 72–74
+
+Doctor.java: Lines 54–56
+
+Professor.java: Lines 46–48
+---------------------------------
+6. Adaptation of Iteration & Loop Logic for Sets
+
+Description: Replaced manual index-based for loops with Iterator or native methods (such as .contains())
+for calculations and verifications, since Set collections do not use standard indexes.
+
+Files & Lines:
+
+College.java: Lines 336–338 (checkIfLecturerInCommittee method), 340–349 (getSalaryAvg method)
+
+Committee.java: Lines 71–83 (getTotalArticleCount method)
+
+Doctor.java: Lines 18–29 (getArticles method)
+---------------------------------
+7. Refinement of Specific Business Logic
+
+Description: Replaced targeted input methods and implemented specific exceptions to prevent duplicate data entry,
+adapting the system to the new Set architecture.
+
+Files & Lines:
+
+College.java: Lines 160–171 (Replaced getArticles with getArticlesNames to return a Set<String>)
+
+Department.java: Lines 47–51 (Implemented NoDuplicatesException in addLecturer)
+
