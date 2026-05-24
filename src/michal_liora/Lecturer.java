@@ -135,6 +135,6 @@ public class Lecturer implements HasName,Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, id, degreeLevel, degreeTitle, salary, department, College.namesToString(committees));
+        return Objects.hash(name, id, degreeLevel, degreeTitle, salary);
     }
 }
