@@ -392,9 +392,11 @@ public class College implements Serializable {
     }
 
     public String SetToString(Set<?> set){
+        Iterator<?> it = set.iterator();
         StringBuilder toReturn = new StringBuilder();
-        for(Object item : set){
-            toReturn.append(item.toString()).append("\n");
+        while(it.hasNext()) {
+            toReturn.append(it.next().toString());
+            toReturn.append("\n");
         }
         return toReturn.toString();
     }
