@@ -1,5 +1,6 @@
 package michal_liora;
 
+import michal_liora.Enums.degreeLevel;
 import java.io.*;
 import java.util.*;
 
@@ -407,8 +408,8 @@ public class College implements Serializable {
                 break;
             case 2:
                 LecturerComparator = (o1, o2) -> {
-                    Enums.degreeLevel dl1 = Enums.degreeLevel.valueOf(o1.getDegreeLevel());
-                    Enums.degreeLevel dl2 = Enums.degreeLevel.valueOf(o2.getDegreeLevel());
+                    degreeLevel dl1 = degreeLevel.valueOf(o1.getDegreeLevel());
+                    degreeLevel dl2 = degreeLevel.valueOf(o2.getDegreeLevel());
                     int x = dl1.compareTo(dl2);
                     if(x == 0)
                         return o1.getName().compareTo(o2.getName());
@@ -431,8 +432,40 @@ public class College implements Serializable {
         Main.printMessage(SetToString(orderedLecturers));
     }
 
-    public void getDetailsOfAllCommittees(){
-        Main.printMessage(SetToString(committees));
+    public void getDetailsOfAllCommittees() throws CollegeException {
+        Comparator<Committee> CommitteeComparator;
+        int orderBy = Main.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Number of Members\n  3 - by Member Type\n");
+        switch (orderBy) {
+            case 1:
+                CommitteeComparator =(o1, o2) -> o1.getName().compareTo(o2.getName());
+                break;
+            case 2:
+                CommitteeComparator = (o1, o2) -> {
+                    //Integer instead of int because we wanted to use compareTo()
+                    Integer numMembers1 = o1.getMembers().size();
+                    Integer numMembers2 = o2.getMembers().size();
+                    int x =  numMembers1.compareTo(numMembers2);
+                    if(x == 0)
+                        return o1.getName().compareTo(o2.getName());
+                    return x;
+                };
+                break;
+            case 3:
+                CommitteeComparator = (o1, o2) -> {
+                    degreeLevel mt1 = degreeLevel.valueOf(o1.getMemberType());
+                    degreeLevel mt2 = degreeLevel.valueOf(o2.getMemberType());
+                    int x = mt1.compareTo(mt2);
+                    if(x == 0)
+                        return o1.getName().compareTo(o2.getName());
+                    return x;
+                };
+                break;
+            default:
+                throw new InvalidUserInputException(Enums.errorMessage.INVALID_CHOICE.getMessage());
+        }
+        Set<Committee> orderedCommittees = new TreeSet<>(CommitteeComparator);
+        orderedCommittees.addAll(committees);
+        Main.printMessage(SetToString(orderedCommittees));
     }
 
     public void testCompareDoctorsAndProfessors(Lecturer lecturer1, Lecturer lecturer2) throws CollegeException {
