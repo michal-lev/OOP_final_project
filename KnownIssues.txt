@@ -132,7 +132,7 @@ The implementation also includes validation using InvalidUserInputException for 
 
 Files & Lines:
 
-College.java: Lines 404-435 (getDetailsOfAllLecturers), 437-471 (getDetailsOfAllCommittees)
+College.java: Lines 404-435 (getDetailsOfAllLecturers method), 437-471 (getDetailsOfAllCommittees method)
 
 
 
