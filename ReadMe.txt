@@ -20,6 +20,7 @@ Features:
 - Committee Management: Add committees, manage committee members, and update the committee chair.
 - Department Management: Add new departments to the college.
 - Data Analysis: Calculate salary averages at the college and department levels.
+- Sorting & Display: Interactive display of lecturers and committees sorted by multiple criteria chosen at runtime using Comparator-based sorting.
 - Comparisons: Compare lecturers (by number of articles) and committees (by size/articles).
 - Cloning: Create a clone of an existing committee.
 - Data Persistence: Save and load data to/from the 'collegeBackup.bin' file.
