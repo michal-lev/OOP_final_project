@@ -33,7 +33,7 @@ College.java: Lines 10–12 (Class Fields), 17–19 (College Constructor)
 
 Committee.java: Lines 14 (Class Field), 20 (Committee Constructor), 24–29 (Committee Copy Constructor)
 
-Department.java: : Lines 12 (Class Field), 17 (Department Constructor)
+Department.java: Lines 12 (Class Field), 17 (Department Constructor)
 ---------------------------------
 2. Lecturer Attributes Update (ArrayList → Set)
 
@@ -105,7 +105,7 @@ for calculations and verifications, since Set collections do not use standard in
 
 Files & Lines:
 
-College.java: Lines 336–338 (checkIfLecturerInCommittee method), 340–349 (getSalaryAvg method)
+College.java: Lines 336–338 (checkIfLecturerInCommittee method), 340–349 (getSalaryAvg method), 394–402 (SetToString method)
 
 Committee.java: Lines 71–83 (getTotalArticleCount method)
 
@@ -121,4 +121,18 @@ Files & Lines:
 College.java: Lines 160–171 (Replaced getArticles with getArticlesNames to return a Set<String>)
 
 Department.java: Lines 47–51 (Implemented NoDuplicatesException in addLecturer)
+---------------------------------
+8. Sorting Functionality for Lecturers and Committees
+
+Description: Enhanced the getDetailsOfAllLecturers and getDetailsOfAllCommittees methods by adding dynamic sorting functionality using Comparator and TreeSet.
+Users can now choose different sorting criteria at runtime:
+Lecturers: by name, degree level, or salary.
+Committees: by name, number of members, or member type.
+The implementation also includes validation using InvalidUserInputException for unsupported menu choices.
+
+Files & Lines:
+
+College.java: Lines 404-435 (getDetailsOfAllLecturers), 437-471 (getDetailsOfAllCommittees)
+
+
 
