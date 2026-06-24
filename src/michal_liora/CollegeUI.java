@@ -41,71 +41,53 @@ public class CollegeUI {
                         break;
 
                     case 1:
-                        addLecturer(college);
+                        addLecturer();
                         break;
 
                     case 2:
-                        String name = ConsoleIO.getStringFromUser("Enter committee name: ");
-                        String chairName = ConsoleIO.getStringFromUser("Enter chair name: ");
-                        String memberType = ConsoleIO.getStringFromUser("Enter members degree level (bachelor/master/doctorate/professor): ");
-                        college.createNewCommittee(name, chairName, memberType);
-                        ConsoleIO.printMessage("Committee created successfully.");
+                        createNewCommittee();
                         break;
 
                     case 3:
-                        String committeeName = ConsoleIO.getNameFromUser(Committee.class.getSimpleName());
-                        String memberName = ConsoleIO.getNameFromUser(Lecturer.class.getSimpleName());
-
-                        college.addLecturerToCommittee(committeeName, memberName);
-                        ConsoleIO.printMessage("Member added to committee successfully.");
+                        addLecturerToCommittee();
                         break;
 
                     case 4:
-                        String commName = ConsoleIO.getStringFromUser("Enter committee name: ");
-                        String chair = ConsoleIO.getStringFromUser("Enter new chair name: ");
-                        college.changeCommitteeHead(commName, chair);
-                        ConsoleIO.printMessage("Committee chair updated successfully.");
+                        changeCommitteeHead();
                         break;
 
                     case 5:
-                        String nameComm = ConsoleIO.getStringFromUser("Enter committee name: ");
-                        String lecturerName = ConsoleIO.getStringFromUser("Enter lecturer name to remove: ");
-                        college.removeMemberFromCommittee(nameComm, lecturerName);
-                        ConsoleIO.printMessage("Lecturer removed from committee successfully.");
+                        removeMemberFromCommittee();
                         break;
 
                     case 6:
-                        String deptName = ConsoleIO.getStringFromUser("Enter department name: ");
-                        int studentCount = ConsoleIO.getIntFromUser("Enter number of students in department: ");
-                        college.createNewDepartment(deptName, studentCount);
-                        ConsoleIO.printMessage("Department added successfully.");
+                        createNewDepartment();
                         break;
 
                     case 7:
-                        double salaryAvg = college.getLecturersSalaryAvg();
-                        ConsoleIO.printMessage("The average salary of all lecturers is: " + salaryAvg);
+                        getLecturersSalaryAvg();
                         break;
 
                     case 8:
-                        college.getDepartmentMembersSalaryAvg();
+                        getDepartmentMembersSalaryAvg();
                         break;
                     case 9:
-                        college.getDetailsOfAllLecturers();
+                        getDetailsOfAllLecturers();
                         break;
                     case 10:
-                        college.getDetailsOfAllCommittees();
+                        getDetailsOfAllCommittees();
                         break;
                     case 11:
-                        college.addLecturerToDepartment();
+                        addLecturerToDepartment();
                         break;
                     case 12:
-                        college.compareDoctorsAndProfessors();
+                        compareDoctorsAndProfessors();
                         break;
                     case 13:
-                        college.compareCommittees();
+                        compareCommittees();
                         break;
                     case 14:
-                        college.createCommitteeClone();
+                        createCommitteeClone();
                         break;
                     default:
                         throw new InvalidUserInputException(Enums.errorMessage.INVALID_CHOICE.getMessage());
@@ -120,7 +102,7 @@ public class CollegeUI {
         } while (showMenu);
     }
 
-    private static void addLecturer(College college) throws CollegeException {
+    private void addLecturer() throws CollegeException {
         String lecturerName = ConsoleIO.getStringFromUser("Enter name: ");
         String id = ConsoleIO.getStringFromUser("Enter ID number: ");
         String degreeLevel = ConsoleIO.getStringFromUser("Enter degree (Bachelor/Master/Doctorate/Professor): ");
@@ -149,5 +131,94 @@ public class CollegeUI {
         }
         college.createNewLecturer(lecturerName, id, degreeLevel, degreeTitle, salary, departmentName, articles, grantingInstitution);
         ConsoleIO.printMessage("Lecturer added successfully.");
+    }
+
+    private void createNewCommittee() throws CollegeException {
+        String name = ConsoleIO.getStringFromUser("Enter committee name: ");
+        String chairName = ConsoleIO.getStringFromUser("Enter chair name: ");
+        String memberType = ConsoleIO.getStringFromUser("Enter members degree level (bachelor/master/doctorate/professor): ");
+        college.createNewCommittee(name, chairName, memberType);
+        ConsoleIO.printMessage("Committee created successfully.");
+    }
+
+    private void addLecturerToCommittee() throws CollegeException {
+        String committeeName = ConsoleIO.getNameFromUser(Committee.class.getSimpleName());
+        String memberName = ConsoleIO.getNameFromUser(Lecturer.class.getSimpleName());
+
+        college.addLecturerToCommittee(committeeName, memberName);
+        ConsoleIO.printMessage("Member added to committee successfully.");
+    }
+
+    private void changeCommitteeHead() throws CollegeException {
+        String commName = ConsoleIO.getStringFromUser("Enter committee name: ");
+        String chair = ConsoleIO.getStringFromUser("Enter new chair name: ");
+        college.changeCommitteeHead(commName, chair);
+        ConsoleIO.printMessage("Committee chair updated successfully.");
+    }
+
+    private void removeMemberFromCommittee() throws CollegeException{
+        String nameComm = ConsoleIO.getStringFromUser("Enter committee name: ");
+        String lecturerName = ConsoleIO.getStringFromUser("Enter lecturer name to remove: ");
+        college.removeMemberFromCommittee(nameComm, lecturerName);
+        ConsoleIO.printMessage("Lecturer removed from committee successfully.");
+
+    }
+
+    private void createNewDepartment() throws CollegeException{
+        String deptName = ConsoleIO.getStringFromUser("Enter department name: ");
+        int studentCount = ConsoleIO.getIntFromUser("Enter number of students in department: ");
+        college.createNewDepartment(deptName, studentCount);
+        ConsoleIO.printMessage("Department added successfully.");
+    }
+
+    private void getLecturersSalaryAvg() throws CollegeException{
+        double salaryAvg = college.getLecturersSalaryAvg();
+        ConsoleIO.printMessage("The average salary of all lecturers is: " + salaryAvg);
+    }
+
+    private void getDepartmentMembersSalaryAvg() throws CollegeException{
+        String departmentName = ConsoleIO.getStringFromUser("Enter department Name: ");
+        double departmentSalaryAvg = college.getDepartmentMembersSalaryAvg(departmentName);
+        ConsoleIO.printMessage("The salary average is : " + departmentSalaryAvg);
+
+    }
+
+    private void getDetailsOfAllLecturers() throws CollegeException{
+        int orderBy = ConsoleIO.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Degree Level\n  3 - by Salary\n");
+        String orderedLecturers =  college.getDetailsOfAllLecturers(orderBy);
+        ConsoleIO.printMessage(orderedLecturers);
+    }
+
+    private void getDetailsOfAllCommittees() throws CollegeException{
+        int orderBy = ConsoleIO.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Number of Members\n  3 - by Member Type\n");
+        String orderedCommittees =  college.getDetailsOfAllCommittees(orderBy);
+        ConsoleIO.printMessage(orderedCommittees);
+    }
+
+    private void addLecturerToDepartment() throws CollegeException{
+        String departmentName = ConsoleIO.getStringFromUser("Enter department name: ");
+        String lecturerName = ConsoleIO.getStringFromUser("Enter lecturer name: ");
+        college.addLecturerToDepartment(departmentName, lecturerName);
+    }
+
+    private void compareDoctorsAndProfessors() throws CollegeException{
+        String lecturerName1 = ConsoleIO.getStringFromUser("Enter first lecturer name: ");
+        String lecturerName2 = ConsoleIO.getStringFromUser("Enter second lecturer name: ");
+        String compareStr = college.compareDoctorsAndProfessors(lecturerName1, lecturerName2);
+        ConsoleIO.printMessage(compareStr);
+    }
+
+    private void compareCommittees() throws CollegeException{
+        String committeeName1 = ConsoleIO.getStringFromUser("Enter first committee name: ");
+        String committeeName2 = ConsoleIO.getStringFromUser("Enter second committee name: ");
+        int compareChoice = ConsoleIO.getIntFromUser("Choose a filter:\n  1) By number of members\n  2) By total number of members' articles\n");
+        String compareStr = college.compareCommittees(committeeName1, committeeName2, compareChoice);
+        ConsoleIO.printMessage(compareStr);
+
+    }
+
+    private void createCommitteeClone() throws CollegeException{
+        String committeeName = ConsoleIO.getStringFromUser("Enter committee name: ");
+        college.createCommitteeClone(committeeName);
     }
 }

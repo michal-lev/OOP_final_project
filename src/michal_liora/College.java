@@ -55,8 +55,7 @@ public class College implements Serializable {
         }
     }
     
-    public void createCommitteeClone() throws CollegeException {
-        String committeeName = Main.getStringFromUser("Enter committee name: ");
+    public void createCommitteeClone(String committeeName) throws CollegeException {
         Committee committeeToClone = getByName(committees, committeeName);
         testCreateCommitteeClone(committeeToClone);
         Committee newCommittee = new Committee(committeeToClone);
@@ -304,14 +303,11 @@ public class College implements Serializable {
             throw new NotExistException(Enums.errorMessage.DEPARTMENT_NOT_EXIST.getMessage());
         }
     }
-    public void getDepartmentMembersSalaryAvg() throws CollegeException {
-        String name = Main.getStringFromUser("Enter department Name: ");
+
+    public double getDepartmentMembersSalaryAvg(String name) throws CollegeException {
         Department department = getByName(departments, name);
         testGetDepartmentMembersSalaryAvg(department);
-
-        double salaryAvg = calculateAvgSalary(department.getLecturers());
-
-        Main.printMessage("The salary average is : " + salaryAvg);
+        return calculateAvgSalary(department.getLecturers());
     }
 
     public void testAddLecturerToDepartment(Department department, Lecturer lecturer) throws CollegeException {
@@ -326,10 +322,7 @@ public class College implements Serializable {
         }
     }
 
-    public void addLecturerToDepartment() throws CollegeException {
-        String departmentName = Main.getStringFromUser("Enter department name: ");
-        String lecturerName = Main.getStringFromUser("Enter lecturer name: ");
-
+    public void addLecturerToDepartment(String departmentName, String lecturerName) throws CollegeException {
         Department department = getByName(departments,departmentName);
         Lecturer lecturer = getByName(lecturers, lecturerName);
         testAddLecturerToDepartment(department, lecturer); //could throw
@@ -348,9 +341,8 @@ public class College implements Serializable {
         return toReturn.toString();
     }
 
-    public void getDetailsOfAllLecturers() throws CollegeException {
+    public String getDetailsOfAllLecturers(int orderBy) throws CollegeException {
         Comparator<Lecturer> LecturerComparator;
-        int orderBy = Main.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Degree Level\n  3 - by Salary\n");
         switch (orderBy) {
             case 1:
                 LecturerComparator =(o1, o2) -> o1.getName().compareTo(o2.getName());
@@ -378,12 +370,11 @@ public class College implements Serializable {
         }
         Set<Lecturer> orderedLecturers = new TreeSet<>(LecturerComparator);
         orderedLecturers.addAll(lecturers);
-        Main.printMessage(SetToString(orderedLecturers));
+        return SetToString(orderedLecturers);
     }
 
-    public void getDetailsOfAllCommittees() throws CollegeException {
+    public String getDetailsOfAllCommittees(int orderBy) throws CollegeException {
         Comparator<Committee> CommitteeComparator;
-        int orderBy = Main.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Number of Members\n  3 - by Member Type\n");
         switch (orderBy) {
             case 1:
                 CommitteeComparator =(o1, o2) ->
@@ -415,7 +406,7 @@ public class College implements Serializable {
         }
         Set<Committee> orderedCommittees = new TreeSet<>(CommitteeComparator);
         orderedCommittees.addAll(committees);
-        Main.printMessage(SetToString(orderedCommittees));
+        return SetToString(orderedCommittees);
     }
 
     public void testCompareDoctorsAndProfessors(Lecturer lecturer1, Lecturer lecturer2) throws CollegeException {
@@ -427,16 +418,14 @@ public class College implements Serializable {
         }
     }
 
-    public void compareDoctorsAndProfessors() throws CollegeException {
-        String lecturerName1 = Main.getStringFromUser("Enter first lecturer name: ");
-        String lecturerName2 = Main.getStringFromUser("Enter second lecturer name: ");
+    public String compareDoctorsAndProfessors(String lecturerName1, String lecturerName2) throws CollegeException {
         Lecturer lecturer1 = getByName(lecturers, lecturerName1);
         Lecturer lecturer2 = getByName(lecturers, lecturerName2);
 
         testCompareDoctorsAndProfessors(lecturer1,lecturer2);
 
         int compareResult = ((Doctor) lecturer1).compareTo((Doctor) lecturer2);
-        Main.printMessage(getCompareString(compareResult, Lecturer.class.getSimpleName()));
+        return getCompareString(compareResult, Lecturer.class.getSimpleName());
     }
 
     public void testCompareCommittees(Committee committee1, Committee committee2) throws NotExistException {
@@ -445,15 +434,12 @@ public class College implements Serializable {
         }
     }
 
-    public void compareCommittees() throws CollegeException{
-        String committeeName1 = Main.getStringFromUser("Enter first committee name: ");
-        String committeeName2 = Main.getStringFromUser("Enter second committee name: ");
+    public String compareCommittees(String committeeName1, String committeeName2, int compareChoice) throws CollegeException{
         Committee committee1 = getByName(committees, committeeName1);
         Committee committee2 = getByName(committees, committeeName2);
 
         testCompareCommittees(committee1,committee2);
 
-        int compareChoice = Main.getIntFromUser("Choose a filter:\n  1) By number of members\n  2) By total number of members' articles\n");
         int compareResult;
         SortCommitteeByNumMembers numMembersComparator = new SortCommitteeByNumMembers();
         SortCommitteeByTotalNumArticles totalNumArticles = new SortCommitteeByTotalNumArticles();
@@ -468,8 +454,7 @@ public class College implements Serializable {
             default:
                 throw new InvalidUserInputException(Enums.errorMessage.INVALID_CHOICE.getMessage());
         }
-
-        Main.printMessage(getCompareString(compareResult,Committee.class.getSimpleName()));
+        return getCompareString(compareResult,Committee.class.getSimpleName());
     }
 
     public String getCompareString(int compareResult, String className){
