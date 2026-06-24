@@ -9,7 +9,6 @@ public class College implements Serializable {
     private final Set<Lecturer> lecturers;
     private final Set<Committee> committees;
     private final Set<Department> departments;
-    private final static String collegeBackupPath = "collegeBackup.bin";
 
     public College(String name) {
         this.name = name;
@@ -22,32 +21,6 @@ public class College implements Serializable {
         return name;
     }
 
-    public static College uploadBackupFile() throws IOException, ClassNotFoundException {
-        College collegeBackup = null;
-        File file = new File(collegeBackupPath);
-
-        if (file.exists()) {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            collegeBackup = (College) objectInputStream.readObject();
-            Main.printMessage("Loaded college '" + collegeBackup.getName() + "' from backup.");
-        }
-        else{
-            Main.printMessage("No backup found, please create your college :)");
-        }
-        return collegeBackup;
-    }
-    
-    public void saveBeforeExit() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(collegeBackupPath);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeObject(this);
-        Main.printMessage("All college info saved.");
-
-        objectOutputStream.close();
-        fileOutputStream.close();
-    }
-    
     public static String namesToString(Set<? extends HasName> setWithNames) {
         Iterator<? extends HasName> it = setWithNames.iterator();
         StringBuilder names = new StringBuilder("[");
@@ -103,34 +76,25 @@ public class College implements Serializable {
         return name;
     }
 
-    public void createNewLecturer() throws CollegeException {
-        String name = getName(lecturers, Lecturer.class.getSimpleName());
-        String id = Main.getStringFromUser("Enter ID number: ");
-        String degreeLevel = Main.getStringFromUser("Enter degree (Bachelor/Master/Doctorate/Professor): ");
-        String degreeTitle = Main.getStringFromUser("Enter degree Title: ");
-        double salary = Main.getDoubleFromUser("Enter Salary: ");
-        String departmentName = Main.getStringFromUser("Enter department name (or press Enter to skip): ");
+    public void createNewLecturer(String name, String id, String degreeLevel, String degreeTitle, double salary, String departmentName, Set<String> articles, String grantingInstitution) throws CollegeException {
         Department department = getByName(departments, departmentName);
         boolean departmentNameEmpty = departmentName.isEmpty();
         String lecturerType = testLecturerDetails(name, id,degreeLevel, degreeTitle, salary, departmentNameEmpty, department);
+
         Lecturer newLecturer;
         if(lecturerType.equals("regular")){
             newLecturer = new Lecturer(name, id, degreeLevel, degreeTitle, salary, department);
         }
-        else{
-            int numArticles = Main.getIntFromUser("Enter number of articles: ");
-            Set<String> articles = getArticlesNames(numArticles);
-            if(lecturerType.equals(Enums.degreeLevel.PROFESSOR.toString())){
-                String grantingInstitution = Main.getStringFromUser("Enter the professor's granting institution : ");
-                if (grantingInstitution.isEmpty()){
-                    throw new InvalidUserInputException(Enums.errorMessage.LECTURER_DETAIL_EMPTY.getMessage());
-                }
-                newLecturer = new Professor(name, id, degreeLevel, degreeTitle, salary, department,articles,grantingInstitution);
+        else if (lecturerType.equals(Enums.degreeLevel.PROFESSOR.toString())) {
+            if (grantingInstitution == null || grantingInstitution.isEmpty()) {
+                throw new InvalidUserInputException(Enums.errorMessage.LECTURER_DETAIL_EMPTY.getMessage());
             }
-            else{
-                newLecturer = new Doctor(name, id, degreeLevel, degreeTitle, salary, department, articles);
-            }
+            newLecturer = new Professor(name, id, degreeLevel, degreeTitle, salary, department, articles, grantingInstitution);
         }
+        else {
+            newLecturer = new Doctor(name, id, degreeLevel, degreeTitle, salary, department, articles);
+        }
+
         lecturers.add(newLecturer);
         if (!departmentNameEmpty) {
             department.addLecturer(newLecturer);
@@ -184,31 +148,26 @@ public class College implements Serializable {
         return validMemberType;
     }
 
-    public void createNewCommittee() throws CollegeException{
-        String name = getName(committees, Committee.class.getSimpleName());
-        String chairName = Main.getStringFromUser("Enter chair name: ");
+    public void createNewCommittee(String name, String chairName, String memberType) throws CollegeException {
         Lecturer chair = getByName(lecturers, chairName);
-        String memberType = Main.getStringFromUser("Enter members degree level (bachelor/master/doctorate/professor): ");
-
         String validMemberType = testCommitteeDetails(name, chair,memberType); // might throw
-
         Committee newCommittee = new Committee(name, chair, validMemberType);
         addCommittee(newCommittee);
     }
 
-    public void testCreateNewDepartment(String name, int studentCount) throws InvalidUserInputException{
+    public void testCreateNewDepartment(Department existingDept,String name, int studentCount) throws CollegeException {
+        if (existingDept != null) {
+            throw new CollegeException(Enums.errorMessage.DEPARTMENT_EXISTS.getMessage());
+        }
         if (name.isEmpty())
             throw new InvalidUserInputException(Enums.errorMessage.NAME_EMPTY.getMessage());
         if (!checkValidStudentCount(studentCount))
             throw new InvalidUserInputException(Enums.errorMessage.INVALID_STUDENT_COUNT.getMessage());
     }
 
-    public void createNewDepartment() throws CollegeException{
-        String name = getName(departments,Department.class.getSimpleName());
-        int studentCount = Main.getIntFromUser("Enter number of students in department: ");
-
-        testCreateNewDepartment(name, studentCount);
-
+    public void createNewDepartment(String name, int studentCount) throws CollegeException {
+        Department existingDept = getByName(departments, name);
+        testCreateNewDepartment(existingDept, name, studentCount);
         Department newDepartment = new Department(name,studentCount);
         departments.add(newDepartment);
     }
@@ -253,15 +212,11 @@ public class College implements Serializable {
         if (checkIfLecturerInCommittee(newChair,committee)){
             throw new InvalidOperationValueException(Enums.errorMessage.CHAIR_CANT_BE_MEMBER.getMessage());
         }
-
     }
-    public void changeCommitteeHead() throws CollegeException {
-        String committeeName = Main.getNameFromUser(Committee.class.getSimpleName());
-        String chairName = Main.getStringFromUser("Enter chair name: ");
-        
+
+    public void changeCommitteeHead(String committeeName, String chairName) throws CollegeException {
         Committee committee = getByName(committees, committeeName);
         Lecturer newChair = getByName(lecturers, chairName);
-        
         testChangeCommitteeHead(committee,newChair);
         committee.setChair(newChair);
     }
@@ -293,15 +248,10 @@ public class College implements Serializable {
         }
     }
 
-    public void addLecturerToCommittee() throws CollegeException {
-        String committeeName = Main.getStringFromUser("Enter committee name: ");
-        String lecturerName = Main.getStringFromUser("Enter lecturer name: ");
-        
+    public void addLecturerToCommittee(String committeeName, String lecturerName) throws CollegeException {
         Committee committee = getByName(committees,committeeName);
         Lecturer lecturer = getByName(lecturers, lecturerName);
-
         testAddLecturerToCommittee(committee, lecturer); // could throw
-
         committee.addMember(lecturer);
         lecturer.updateCommittees(committee);
     }
@@ -319,15 +269,10 @@ public class College implements Serializable {
 
     }
 
-    public void removeMemberFromCommittee() throws CollegeException{
-        String committeeName = Main.getStringFromUser("Enter committee name: ");
-        String lecturerName = Main.getStringFromUser("Enter lecturer name: ");
-        
+    public void removeMemberFromCommittee(String committeeName,String lecturerName) throws CollegeException{
         Committee committee = getByName(committees, committeeName);
         Lecturer member = getByName(lecturers, lecturerName);
-
         testRemoveMemberFromCommittee(committee,member);
-
         committee.removeMember(member); // remove member from member arr in committee
         member.removeCommittee(committee); // remove committee from committees arr in lecturer
     }
@@ -336,10 +281,13 @@ public class College implements Serializable {
         return committee.getMembers().contains(lecturer);
     }
 
-    public double getSalaryAvg(Set<Lecturer> lecturersArr){
+    public double calculateAvgSalary(Set<Lecturer> lecturersSet){
+        if (lecturersSet.isEmpty()) {
+            return 0.0;
+        }
         double salarySum = 0, avg;
-        int arrSize = lecturersArr.size();
-        for (Lecturer lecturer : lecturersArr) {
+        int arrSize = lecturersSet.size();
+        for (Lecturer lecturer : lecturersSet) {
             salarySum += lecturer.getSalary();
         }
         avg = salarySum / arrSize;
@@ -347,9 +295,8 @@ public class College implements Serializable {
         return avg;
     }
 
-    public void getLecturersSalaryAvg() {
-        double salaryAvg = getSalaryAvg(lecturers);
-        Main.printMessage("The salary average is : " + salaryAvg);
+    public double getLecturersSalaryAvg() {
+       return calculateAvgSalary(lecturers);
     }
 
     public void testGetDepartmentMembersSalaryAvg(Department department) throws NotExistException{
@@ -362,7 +309,7 @@ public class College implements Serializable {
         Department department = getByName(departments, name);
         testGetDepartmentMembersSalaryAvg(department);
 
-        double salaryAvg = getSalaryAvg(department.getLecturers());
+        double salaryAvg = calculateAvgSalary(department.getLecturers());
 
         Main.printMessage("The salary average is : " + salaryAvg);
     }
@@ -439,7 +386,8 @@ public class College implements Serializable {
         int orderBy = Main.getIntFromUser("Please select a sorting criterion:\n  1 - by Name\n  2 - by Number of Members\n  3 - by Member Type\n");
         switch (orderBy) {
             case 1:
-                CommitteeComparator =(o1, o2) -> o1.getName().compareTo(o2.getName());
+                CommitteeComparator =(o1, o2) ->
+                        o1.getName().compareTo(o2.getName());
                 break;
             case 2:
                 CommitteeComparator = (o1, o2) -> {
@@ -533,4 +481,6 @@ public class College implements Serializable {
         }
         return "The first " + className + " has more";
     }
+
+
 }
