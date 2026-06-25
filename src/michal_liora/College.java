@@ -27,6 +27,7 @@ public class College implements Serializable {
 
         while(it.hasNext()) {
             names.append(it.next().getName());
+
             if (it.hasNext())
                 names.append(", ");
         }
@@ -62,17 +63,8 @@ public class College implements Serializable {
         addCommittee(newCommittee);
     }
 
-    public String getName(Set<? extends HasName> set, String className){
-        String name;
-        boolean nameExists;
-        do{
-            name = Main.getNameFromUser(className);
-            nameExists = (getByName(set,name) != null);
-            if(nameExists){
-                Main.printMessage("Name already exists, try again");
-            }
-        }while(nameExists);
-        return name;
+    public <T extends HasName> boolean isUniqueName(Set<T> set, String name) {
+        return getByName(set, name) == null;
     }
 
     public void createNewLecturer(String name, String id, String degreeLevel, String degreeTitle, double salary, String departmentName, Set<String> articles, String grantingInstitution) throws CollegeException {
@@ -117,19 +109,6 @@ public class College implements Serializable {
             return validDegreeLevel;
         }
         return "regular";
-    }
-
-    public Set<String> getArticlesNames(int numArticles) throws InvalidUserInputException {
-        Set<String> articles = new HashSet<>();
-        String articleName;
-        for (int i = 0; i < numArticles; i++){
-            articleName = Main.getStringFromUser("Article " + (i+1) + " : ");
-            if (articleName.isEmpty()){
-                throw new InvalidUserInputException(Enums.errorMessage.ARTICLE_NAME_EMPTY.getMessage());
-            }
-            articles.add(articleName);
-        }
-        return articles;
     }
 
     public String testCommitteeDetails(String name, Lecturer chair, String memberType) throws CollegeException{
@@ -197,7 +176,6 @@ public class College implements Serializable {
         committees.add(committee);
     }
 
-
     public void testChangeCommitteeHead(Committee committee, Lecturer newChair) throws CollegeException{
         if (committee == null){
             throw new NotExistException(Enums.errorMessage.COMMITTEE_NOT_EXIST.getMessage());
@@ -220,7 +198,7 @@ public class College implements Serializable {
         committee.setChair(newChair);
     }
 
-        public <T extends HasName> T getByName(Set<T> set, String name){
+    public <T extends HasName> T getByName(Set<T> set, String name){
         for(T item : set){
             if (item.getName().equalsIgnoreCase(name)){
                 return item;
@@ -467,5 +445,15 @@ public class College implements Serializable {
         return "The first " + className + " has more";
     }
 
+    public Set<Lecturer> getLecturers() {
+        return lecturers;
+    }
 
+    public Set<Committee> getCommittees() {
+        return committees;
+    }
+
+    public Set<Department> getDepartments() {
+        return departments;
+    }
 }

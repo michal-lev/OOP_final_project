@@ -16,9 +16,11 @@ public class Main {
 
     private static College initializeCollege() {
         try {
-            return BackupService.loadCollege();
+            College loadedCollege = BackupService.loadCollege();
+            ConsoleIO.printMessage("\n\nBackup loaded successfully for college: " + loadedCollege.getName());
+            return loadedCollege;
         } catch (Exception e) {
-            ConsoleIO.printMessage("No backup found. Creating new College.");
+            ConsoleIO.printMessage("No backup found. Creating new College:");
             String name = ConsoleIO.getNameFromUser(College.class.getSimpleName());
             return new College(name);
         }

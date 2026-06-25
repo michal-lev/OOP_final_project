@@ -103,7 +103,8 @@ public class CollegeUI {
     }
 
     private void addLecturer() throws CollegeException {
-        String lecturerName = ConsoleIO.getStringFromUser("Enter name: ");
+        Set<Lecturer> lecturers = college.getLecturers();
+        String lecturerName = getUniqueName(lecturers, Lecturer.class.getSimpleName());
         String id = ConsoleIO.getStringFromUser("Enter ID number: ");
         String degreeLevel = ConsoleIO.getStringFromUser("Enter degree (Bachelor/Master/Doctorate/Professor): ");
         String degreeTitle = ConsoleIO.getStringFromUser("Enter degree Title: ");
@@ -133,8 +134,22 @@ public class CollegeUI {
         ConsoleIO.printMessage("Lecturer added successfully.");
     }
 
+    private <T extends HasName> String getUniqueName(Set<T> set, String className) {
+        String name;
+        do {
+            name = ConsoleIO.getNameFromUser(className);
+            if (!college.isUniqueName(set, name)) {
+                ConsoleIO.printMessage("Name already exists, try again");
+            }
+
+        } while (!college.isUniqueName(set, name));
+
+        return name;
+    }
+
     private void createNewCommittee() throws CollegeException {
-        String name = ConsoleIO.getStringFromUser("Enter committee name: ");
+        Set<Committee> Committees = college.getCommittees();
+        String name = getUniqueName(Committees, Committee.class.getSimpleName());
         String chairName = ConsoleIO.getStringFromUser("Enter chair name: ");
         String memberType = ConsoleIO.getStringFromUser("Enter members degree level (bachelor/master/doctorate/professor): ");
         college.createNewCommittee(name, chairName, memberType);
@@ -151,23 +166,24 @@ public class CollegeUI {
 
     private void changeCommitteeHead() throws CollegeException {
         String commName = ConsoleIO.getStringFromUser("Enter committee name: ");
-        String chair = ConsoleIO.getStringFromUser("Enter new chair name: ");
-        college.changeCommitteeHead(commName, chair);
+        String chairName = ConsoleIO.getStringFromUser("Enter new chair name: ");
+        college.changeCommitteeHead(commName, chairName);
         ConsoleIO.printMessage("Committee chair updated successfully.");
     }
 
     private void removeMemberFromCommittee() throws CollegeException{
-        String nameComm = ConsoleIO.getStringFromUser("Enter committee name: ");
+        String commName = ConsoleIO.getStringFromUser("Enter committee name: ");
         String lecturerName = ConsoleIO.getStringFromUser("Enter lecturer name to remove: ");
-        college.removeMemberFromCommittee(nameComm, lecturerName);
+        college.removeMemberFromCommittee(commName, lecturerName);
         ConsoleIO.printMessage("Lecturer removed from committee successfully.");
 
     }
 
     private void createNewDepartment() throws CollegeException{
-        String deptName = ConsoleIO.getStringFromUser("Enter department name: ");
+        Set<Department> departments = college.getDepartments();
+        String departmentName = getUniqueName(departments, Department.class.getSimpleName());
         int studentCount = ConsoleIO.getIntFromUser("Enter number of students in department: ");
-        college.createNewDepartment(deptName, studentCount);
+        college.createNewDepartment(departmentName, studentCount);
         ConsoleIO.printMessage("Department added successfully.");
     }
 
@@ -221,4 +237,5 @@ public class CollegeUI {
         String committeeName = ConsoleIO.getStringFromUser("Enter committee name: ");
         college.createCommitteeClone(committeeName);
     }
+
 }
