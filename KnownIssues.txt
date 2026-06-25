@@ -1,7 +1,9 @@
 Version:
 
-Course 10119, Exercise 1
+Course 10119, Exercise 2
 Continuation project of the Object-Oriented Programming course.
+
+This exercise continues the previous implementation with architectural refactoring, UI separation, and system improvements.
 
 ============================================================================
 Known Issues / Bugs:
@@ -10,129 +12,181 @@ Doctor's hashCode Dependency on Articles
 
 Description: In the Doctor class, the equals and hashCode methods use the articles Set.
 Because of this, if someone tries to add or remove articles after a Doctor is already placed inside a HashSet
-(like the lecturers Set in the College class), the Doctor's hashCode will change.
-This is a known issue because changing a hashCode for an object that is already inside a HashSet causes
-the Set to "lose" the object.
+(like the lecturers Set in the College class), the Doctor's hashCode may change.
 
-Status: Since the current system does not allow updating a doctor's articles after creation,
-this will not cause an actual bug right now. It is documented here as a known design limitation in case the system
-is updated in the future.
+This is a known design limitation. In the current system, articles are not modified after creation,
+so the issue does not affect runtime behavior.
 
 ============================================================================
 Changes & Updates
 
-1. System Data Structures Update (ArrayList → Set)
-
-Description: Replaced the main internal collections (lecturers, committees, departments) and
-Committee members from ArrayList to Set (using HashSet). This prevents duplicates, improves search efficiency
-to O(1), and properly handles deep copies in constructors.
-
-Files & Lines:
-
-College.java: Lines 10–12 (Class Fields), 17–19 (College Constructor)
-
-Committee.java: Lines 14 (Class Field), 20 (Committee Constructor), 24–29 (Committee Copy Constructor)
-
-Department.java: Lines 12 (Class Field), 17 (Department Constructor)
 ---------------------------------
-2. Lecturer Attributes Update (ArrayList → Set)
+1. UI and Business Logic Separation
 
-Description: Replaced ArrayList with Set for specific lecturer attributes (such as a lecturer's committees and
-a doctor's/professor's articles) to prevent duplicates and maintain data integrity.
+Description:
+The system was refactored into a layered architecture improving separation of concerns and maintainability.
 
-Files & Lines:
+- CollegeUI introduced to handle all user interaction and menu flow
+- College contains only business logic with no input/output responsibility
+- ConsoleIO centralizes all user input/output operations
+- All operations are executed through parameter-based methods in College
+- Main no longer handles any user operations and only initializes the system
+- Each menu option is implemented as a dedicated method inside CollegeUI
 
-Lecturer.java: Lines 16 (Class Field), 25 (Lecturer Constructor)
+Files:
 
-Doctor.java: Lines 8 (Class Field), 9 (Doctor Constructor), 14 (setArticles method)
+Main.java:
+- main()
+- initializeCollege()
 
-Professor.java: Lines 9–12 (Professor Constructor)
+CollegeUI.java:
+- startMenu()
+- addLecturer()
+- createNewCommittee()
+- addLecturerToCommittee()
+- changeCommitteeHead()
+- removeMemberFromCommittee()
+- createNewDepartment()
+- getLecturersSalaryAvg()
+- getDepartmentMembersSalaryAvg()
+- getDetailsOfAllLecturers()
+- getDetailsOfAllCommittees()
+- addLecturerToDepartment()
+- compareDoctorsAndProfessors()
+- compareCommittees()
+- createCommitteeClone()
+
+College.java:
+- createNewLecturer(...)
+- testLecturerDetails(...)
+- createNewCommittee(...)
+- testCommitteeDetails(...)
+- addLecturerToCommittee(...)
+- testAddLecturerToCommittee(...)
+- removeMemberFromCommittee(...)
+- testRemoveMemberFromCommittee(...)
+- changeCommitteeHead(...)
+- testChangeCommitteeHead(...)
+- addLecturerToDepartment(...)
+- testAddLecturerToDepartment(...)
+- createNewDepartment(...)
+- testCreateNewDepartment(...)
+- compareDoctorsAndProfessors(...)
+- testCompareDoctorsAndProfessors(...)
+- compareCommittees(...)
+- getByName(...)
+- isUniqueName(...)
+- checkIfLecturerInCommittee(...)
+
+ConsoleIO.java:
+- getStringFromUser()
+- getIntFromUser()
+- getDoubleFromUser()
+- printMessage()
+- getNameFromUser()
+
 ---------------------------------
-3. Implementation of the HasName Interface
+2. Backup System Integration
 
-Description: Implemented the `HasName` interface in the `Lecturer`, `Committee`, and `Department` classes.
-This allows these classes to work with the new generic search and utility methods in `College.java`.
+Description:
+Persistence logic was separated into a dedicated service.
 
-Files & Lines:
+IMPORTANT:
+Previously, save/load functionality was implemented inside College class.
+It was moved into BackupService.
 
-Lecturer.java: Line 9
+- BackupService handles serialization/deserialization
+- College no longer contains file handling logic
+- Main handles backup loading and saving
 
-Committee.java: Line 11
+Files & Functions:
 
-Department.java: Line 9
+BackupService.java:
+- loadCollege()
+- saveCollege()
+
+Main.java:
+- initializeCollege()
+
+College.java (REMOVED):
+- save/load related methods
+
 ---------------------------------
-4. Unified Methods and Generic Utilities
+3. Name Handling Refactor (SOLID Improvement)
 
-Description: Replaced multiple specific string-handling, comparison, and printing methods with consolidated
-generic methods in College.java (namesToString, equalsByName, getByName, SetToString).
-Replaced the logic in the main classes toString and equals methods to delegate to these utilities.
+Description:
+Name handling logic was split to separate UI from validation:
 
-Files & Lines:
+- isUniqueName(...) remains in College (business validation only)
+- getUniqueName(...) moved to CollegeUI (user interaction + loop handling)
 
-College.java: Lines 52–78 (namesToString & equalsByName methods), 270–277 (getByName method), 395–401 (SetToString method)
+This separation enforces that College remains free of user interaction logic while CollegeUI handles input repetition and user guidance.
 
-Lecturer.java: Lines 107 (toString method), 133 (equals method)
+Files:
 
-Committee.java: Lines 86–93 (toString method), 96–104 (equals method)
+College.java:
+- isUniqueName(...)
 
-Department.java: Lines 54–60 (toString method), 63–69 (equals method)
+CollegeUI.java:
+- getUniqueName(...)
 
-Doctor.java: Lines 31–43 (toString method)
-
-Professor.java: Lines 22–35 (toString method)
 ---------------------------------
-5. Implementation of hashCode
+4. Getter Methods for Controlled Data Access
 
-Description: Implemented hashCode methods using Objects.hash() to satisfy the equals/hashCode contract.
-This ensures correct behavior and prevents data loss when objects are stored in the new HashSet collections.
+Description:
+Getter methods were added in College to allow safe access to internal collections.
 
-Files & Lines:
+Files:
 
-Lecturer.java: Lines 136–139
+College.java:
+- getLecturers()
+- getCommittees()
+- getDepartments()
 
-Committee.java: Lines 107–109
-
-Department.java: Lines 72–74
-
-Doctor.java: Lines 54–56
-
-Professor.java: Lines 46–48
 ---------------------------------
-6. Adaptation of Iteration & Loop Logic for Sets
+5. Moving Input Responsibility from Business Logic to UI Layer
 
-Description: Replaced manual index-based for loops with Iterator or native methods (such as .contains())
-for calculations and verifications, since Set collections do not use standard indexes.
+Description:
+Article input handling was moved from College to CollegeUI.
 
-Files & Lines:
+- Previously College handled article collection logic
+- Now CollegeUI is responsible for collecting article data during lecturer creation
+- College receives prepared Set<String> as parameter
 
-College.java: Lines 336–338 (checkIfLecturerInCommittee method), 340–349 (getSalaryAvg method), 394–402 (SetToString method)
+This ensures that College only receives fully constructed data structures and does not depend on user interaction logic.
 
-Committee.java: Lines 71–83 (getTotalArticleCount method)
+College.java:
+- createNewLecturer(...)
+- getArticlesNames(...) (removed)
 
-Doctor.java: Lines 18–29 (getArticles method)
+CollegeUI.java:
+- addLecturer() (handles article input)
+
 ---------------------------------
-7. Input and Validation Updates
+6. System Entry Point Refactor (Main → CollegeUI)
 
-Description: Replaced targeted input methods and implemented specific exceptions to prevent duplicate data entry,
-adapting the system to the new Set architecture.
+Description:
+The Main class was refactored into a minimal bootstrap component.
 
-Files & Lines:
+A major architectural change was the relocation of the entire menu system:
 
-College.java: Lines 160–171 (Replaced getArticles with getArticlesNames to return a Set<String>)
+- The full menu logic (previously implemented in Main using switch-case) was moved to CollegeUI
+- Main no longer handles any user interaction or application logic
+- Main is now responsible only for:
+  - Loading the College instance (from backup if available)
+  - Creating a new College if needed
+  - Starting the CollegeUI loop
 
-Department.java: Lines 47–51 (Implemented NoDuplicatesException in addLecturer)
----------------------------------
-8. Sorting Functionality for Lecturers and Committees
+This change enforces a strict separation between application entry point and presentation layer responsibilities.
 
-Description: Enhanced the getDetailsOfAllLecturers and getDetailsOfAllCommittees methods by adding dynamic sorting functionality using Comparator and TreeSet.
-Users can now choose different sorting criteria at runtime:
-Lecturers: by name, degree level, or salary.
-Committees: by name, number of members, or member type.
-The implementation also includes validation using InvalidUserInputException for unsupported menu choices.
+Files:
 
-Files & Lines:
+Main.java:
+- main()
+- initializeCollege()
 
-College.java: Lines 404-435 (getDetailsOfAllLecturers method), 437-471 (getDetailsOfAllCommittees method)
+CollegeUI.java:
+- startMenu()
+- all menu handling methods
 
-
-
+============================================================================
