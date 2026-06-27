@@ -8,11 +8,6 @@ public class Enums {
         PROFESSOR
     }
 
-    enum CommitteeSortOption {
-        BY_NUM_MEMBERS,
-        BY_TOTAL_NUM_ARTICLES
-    }
-
     enum errorMessage {
         LECTURER_NOT_EXIST("Lecturer does not exist"),
         COMMITTEE_NOT_EXIST("Committee does not exist"),
