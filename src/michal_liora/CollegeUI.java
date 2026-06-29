@@ -126,7 +126,7 @@ public class CollegeUI {
                 articles.add(article);
             }
 
-            if (degreeLevel.equals(Enums.degreeLevel.PROFESSOR.toString())) {
+            if (degreeLevel.equalsIgnoreCase(Enums.degreeLevel.PROFESSOR.toString())) {
                 grantingInstitution = ConsoleIO.getStringFromUser("Enter granting institution: ");
             }
         }
